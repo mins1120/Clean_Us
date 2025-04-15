@@ -1,0 +1,17 @@
+/* BaseLayout.css */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px;
+}
+
+.footer {
+  margin-top: 50px;
+  font-size: 14px;
+  text-align: center;
+  color: #888;
+}
