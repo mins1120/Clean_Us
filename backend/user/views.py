@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from user.models import User
 from django.http import HttpResponse
-
+from user.forms import CustomUserCreationForm  # 아까 만든 폼
 MAX_LOGIN_ATTEMPTS = 5  # 최대 로그인 실패 횟수
 
 def Login(request):
@@ -45,6 +45,20 @@ def Login(request):
 def Logout(request):
     logout(request)
     return redirect('main')
+
+
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('user:login')  # 회원가입 성공 → 로그인 페이지로 이동
+        else:
+            return render(request, 'user/signup.html', {'form': form})  # 실패 → 다시 회원가입 페이지
+    else:
+        form = CustomUserCreationForm()
+        return render(request, 'user/signup.html', {'form': form})
 
     
 
