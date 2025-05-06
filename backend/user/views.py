@@ -4,6 +4,17 @@ from django.contrib import messages
 from user.models import User
 from django.http import HttpResponse
 from user.forms import CustomUserCreationForm  # 아까 만든 폼
+from django.conf import settings
+from django.core.mail import send_mail   #메일 전송
+from django.utils.http import urlsafe_base64_encode   #사용자 ID를 URL-safe하게 인코딩
+from django.utils.encoding import force_bytes   
+from django.contrib.auth.tokens import default_token_generator   #인증 토큰 생성 & 검증
+from django.urls import reverse    #인증 링크 생성용
+from django.contrib.auth import get_user_model  # verify_email용
+from django.utils.http import urlsafe_base64_decode
+
+
+
 MAX_LOGIN_ATTEMPTS = 5  # 최대 로그인 실패 횟수
 
 def Login(request):
@@ -52,13 +63,49 @@ def signup_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('user:login')  # 회원가입 성공 → 로그인 페이지로 이동
+            user = form.save(commit=False)       # 저장 전 유저 객체 생성
+            user.is_active = False               # 이메일 인증 전까지 로그인 비활성화
+            user.save()                          # 유저 저장
+            send_verification_email(user, request)  #  이메일 인증 링크 전송
+            return HttpResponse("가입 완료! 이메일을 확인해주세요.")
         else:
-            return render(request, 'user/signup.html', {'form': form})  # 실패 → 다시 회원가입 페이지
+            return render(request, 'user/signup.html', {'form': form})
     else:
         form = CustomUserCreationForm()
         return render(request, 'user/signup.html', {'form': form})
+
+    
+    
+def send_verification_email(user, request):
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+
+    verify_url = request.build_absolute_uri(
+        reverse('user:verify_email', kwargs={'uidb64': uid, 'token': token})
+    )
+
+    subject = "이메일 인증을 완료해주세요"
+    message = f"{user.username}님, 아래 링크를 클릭하여 이메일 인증을 완료해주세요:\n{verify_url}"
+
+    send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email])
+
+
+def verify_email(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = get_user_model().objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return HttpResponse("이메일 인증이 완료되었습니다. 로그인해주세요.")
+    else:
+        return HttpResponse("인증 링크가 유효하지 않거나 만료되었습니다.")
+
+
+ 
 
     
 
