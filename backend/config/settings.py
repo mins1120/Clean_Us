@@ -13,8 +13,10 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, 'config', '.env'))  # .env 위치 지정
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 
 # Quick-start development settings - unsuitable for production
@@ -135,16 +137,15 @@ AUTH_USER_MODEL = 'user.User'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Gmail SMTP 서버 설정
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.naver.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # 너의 Gmail 계정
-EMAIL_HOST_USER = 'your_email@gmail.com'
-EMAIL_HOST_PASSWORD = '앱 비밀번호 또는 SMTP 비밀번호'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 LOGIN_URL = '/accounts/login/'

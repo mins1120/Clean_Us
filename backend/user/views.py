@@ -52,11 +52,15 @@ def Login(request):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             messages.error(request, '존재하지 않는 이메일입니다.')
-            return redirect('main')  # 실패해도 메인화면으로
+            return redirect('login')  # 에러시 login으로
 
         if user.is_locked:
             messages.error(request, '계정이 잠겼습니다. 관리자에게 문의하세요.')
             return redirect('main')
+        
+        if not user.is_active:
+            messages.error(request, '이메일 인증이 완료되지 않았습니다.')
+            return redirect('login')
 
         # username 대신 user.username을 사용 (Django 기본 auth는 username을 사용함)
         user_auth = authenticate(request, username=user.username, password=password)
@@ -93,7 +97,7 @@ def signup_view(request):
             user.is_active = False               # 이메일 인증 전까지 로그인 비활성화
             user.save()                          # 유저 저장
             send_verification_email(user, request)  #  이메일 인증 링크 전송
-            return HttpResponse("가입 완료! 이메일을 확인해주세요.")
+            return render(request, 'user/email_check_notice.html')  # 이메일 확인 안내 페이지
         else:
             return render(request, 'user/signup.html', {'form': form})
     else:
@@ -110,11 +114,21 @@ def send_verification_email(user, request):
         reverse('user:verify_email', kwargs={'uidb64': uid, 'token': token})
     )
 
-    subject = "이메일 인증을 완료해주세요"
-    message = f"{user.username}님, 아래 링크를 클릭하여 이메일 인증을 완료해주세요:\n{verify_url}"
+    subject = "CleanUs 회원가입 이메일 인증"
+    message = (
+        f"{user.username}님, CleanUs에 가입해주셔서 감사합니다.\n\n"
+        f"아래 링크를 클릭하여 이메일 인증을 완료해주세요:\n\n"
+        f"{verify_url}\n\n"
+        f"해당 링크는 일정 시간 후 만료되니 빠르게 인증을 완료해주세요."
+    )
 
-    send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email])
-
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[user.email],
+        fail_silently=False,
+    )
 
 def verify_email(request, uidb64, token):
     try:
@@ -129,6 +143,18 @@ def verify_email(request, uidb64, token):
         return HttpResponse("이메일 인증이 완료되었습니다. 로그인해주세요.")
     else:
         return HttpResponse("인증 링크가 유효하지 않거나 만료되었습니다.")
+    
+
+def test_email(request):
+    send_mail(
+        subject='[CleanUs] 이메일 테스트입니다.',
+        message='이 메일은 SMTP 설정이 제대로 되었는지 확인하기 위한 테스트입니다.',
+        from_email=settings.EMAIL_HOST_USER,  # settings의 DEFAULT_FROM_EMAIL 사용
+        recipient_list=['peter8656@naver.com'],  # 너가 직접 받을 이메일로 바꾸기!
+        fail_silently=False,
+    )
+    return HttpResponse("이메일 전송 완료!")
+
 
 
  
