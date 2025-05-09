@@ -13,4 +13,9 @@ urlpatterns = [
    template_name='mypage1/change_password_done.html'
    ), name='password_change_done'),
    path('user/home/', views.user_home, name='user_home'),
+   path('test-email/', views.test_email, name='test_email'),
+   path('verify-email/<uidb64>/<token>/', views.verify_email, name='verify_email'),
+   path('signup/', views.signup_view, name='signup'),
+
+
 ]
