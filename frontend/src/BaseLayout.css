@@ -1,17 +1,107 @@
-/* BaseLayout.css */
+/* 전체 레이아웃 설정 */
 .app-layout {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
+/* ✅ 헤더 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  background-color: white;
+  z-index: 1000;
+  position: relative;
+}
+
+.logo {
+  font-size: 35px;
+  font-weight: bold;
+  font-family: 'Georgia', serif;
+  color: black;
+  margin-left: 50px;
+  white-space: nowrap;
+}
+
+/* ✅ 햄버거 메뉴 */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  margin-right: 30px;
+}
+
+.hamburger div {
+  width: 30px;
+  height: 3px;
+  background-color: black;
+  margin: 4px 0;
+}
+
+/* ✅ 메인 콘텐츠 */
 .main-content {
   flex: 1;
   padding: 40px;
 }
 
-.footer {
-  margin-top: 50px;
-  font-size: 14px;
-  text-align: center;
-  color: #888;
+.main-content.no-padding {
+  padding: 0;
+  flex: 1;
 }
+
+/* ✅ 푸터 */
+.footer {
+  width: 100%;
+  padding: 40px 0;
+  font-size: 12px;
+  color: white;
+  background-color: #6b9e42;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.footer-content {
+  max-width: 900px;
+  padding-right: 900px;
+  text-align: left;
+}
+
+.footer-content h2 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* ✅ 사이드바 */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 250px;
+  height: 100%;
+  background-color: #f0f0f0;
+  transition: right 0.3s ease-in-out;
+  z-index: 2000;
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+/* ✅ 닫기 버튼 */
+.close-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2100;
+}
+
+/* ✅ Hero, Features 등 다른 섹션에 영향 주지 않도록 분리 유지 */

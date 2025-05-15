@@ -1,31 +1,71 @@
+/* Sidebar 전체 레이아웃 */
 .sidebar {
-    width: 220px;
-    background-color: #f5f7fa;
-    padding: 20px;
-    border-right: 1px solid #ddd;
-  }
-  
-  .sidebar h2 {
-    font-size: 20px;
-    margin-bottom: 15px;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  
-  .sidebar li {
-    margin-bottom: 12px;
-  }
-  
-  .sidebar a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-  }
-  
-  .sidebar a:hover {
-    color: #007bff;
-  }
-  
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 250px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease-in-out;
+  z-index: 2000;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+/* Sidebar 내부 콘텐츠 */
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 닫기 버튼 */
+.close-btn {
+  position: absolute;
+  margin-left: 11rem;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* 섹션 구성 */
+.sidebar-section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.section-title.with-border {
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding-left: 12px;
+  margin: 0;
+}
+
+.sidebar-list li {
+  font-size: 14px;
+  margin: 6px 0;
+}
+
+.sidebar-list li a {
+  color: black;
+  text-decoration: none;
+}
+
+.sidebar-list li a:hover {
+  text-decoration: underline;
+}

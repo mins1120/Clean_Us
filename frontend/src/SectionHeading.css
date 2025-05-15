@@ -1,0 +1,29 @@
+.section-heading {
+  background-color: white;
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.scroll-text {
+  position: absolute;
+  white-space: nowrap;
+  font-size: 150px;
+  font-weight: 400;
+  font-family: "Playfair+Display";
+  color: #555; /* ✅ 회색으로 변경 */
+  opacity: 0.1;
+  animation: slideLeft 35s linear infinite;
+}
+
+@keyframes slideLeft {
+  0% {
+    right: -100%;
+  }
+  100% {
+    right: 100%;
+  }
+}
