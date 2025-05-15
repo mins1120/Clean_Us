@@ -12,3 +12,13 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.comment_id}: {self.content[:20]}"
+    
+class YoutubeComment(models.Model):
+    content = models.TextField()
+    author = models.CharField(max_length=100)
+    published_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return f"[{self.author}] {self.content[:30]}"

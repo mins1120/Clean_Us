@@ -2,27 +2,28 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    # 기본 사용자 모델에는 username, password, email, first_name, last_name 등 기본적인 필드들이 포함.
-    # username은 식별자
+    name = models.CharField(max_length=100, blank=True, null=True)  # 추가
+
+    # 기존 필드들 유지
     created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True) 
-    email = models.EmailField(unique=True)  # 이메일 중복 불가 설정
+    updated_at = models.DateTimeField(auto_now=True)
+    email = models.EmailField(unique=True)
+
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='custom_user_set',  # related_name 변경
+        related_name='custom_user_set',
         blank=True,
-        help_text=('The groups this user belongs to. A user will get all permissions '
-                   'granted to each of their groups.'),
+        help_text=('The groups this user belongs to.'),
         verbose_name=('groups'),
     )
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='custom_user_permissions_set',  # related_name 변경
+        related_name='custom_user_permissions_set',
         blank=True,
         help_text=('Specific permissions for this user.'),
         verbose_name=('user permissions'),
     )
-
+    
     failed_attempts = models.IntegerField(default=0)  # 로그인 실패 횟수 저장
     is_locked = models.BooleanField(default=False)    # 계정 잠김 여부
 
