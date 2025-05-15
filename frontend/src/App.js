@@ -7,6 +7,9 @@ import FeedbackPage from './FeedbackPage';
 import './App.css';
 import axios from 'axios';
 import React, { useEffect } from 'react'
+import LoginPage from './LoginPage.jsx';
+import SignupPage from './SignupPage.jsx';
+
 
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
@@ -50,6 +53,8 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/" element={<BaseLayout />}>
           <Route index element={<HomePage />} />
           <Route path="keywords" element={<KeywordPage />} />
