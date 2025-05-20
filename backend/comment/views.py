@@ -1,21 +1,35 @@
 from django.shortcuts import render
-from .models import YoutubeComment
-from .youtube_comments import get_youtube_comments
-import os
+from .models import Comment
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from .ai_utils import check_offensive
 
-API_KEY = os.getenv('YOUTUBE_API_KEY')
-VIDEO_ID = os.getenv('YOUTUBE_VIDEO_ID')
+def comment_list_view(request):
+    comments = Comment.objects.all().order_by('-created_at')
+    return render(request, 'comment/comment_list.html', {'comments': comments})
 
-def fetch_youtube_comments(request):
-    comments = get_youtube_comments(VIDEO_ID, API_KEY)
+# Create your views here.
 
-    for c in comments:
-        if not YoutubeComment.objects.filter(content=c['content'], author=c['author']).exists():
-            YoutubeComment.objects.create(
-                content=c['content'],
-                author=c['author'],
-                published_at=c['published_at'],
-            )
+@csrf_exempt
+def create_comment(request):
+    if request.method == 'POST':
+        content = request.POST.get("content")
+        user = request.user  # 로그인 기반이라면, 아니면 따로 author_id 받기
+        is_bad, keyword = check_offensive(content)
 
-    all_comments = YoutubeComment.objects.all().order_by('-published_at')
-    return render(request, 'comment/youtube_comments.html', {'comments': all_comments})
+        Comment.objects.create(
+            author=user,
+            content=content,
+            is_offensive=is_bad,
+            offensive_keyword=keyword
+        )
+
+        return JsonResponse({
+            'result': 'ok',
+            'is_offensive': is_bad,
+            'keyword': keyword
+        })
+    
+def offensive_comment_page(request):
+    comments = Comment.objects.filter(is_offensive=True).order_by('-created_at')
+    return render(request, 'comment/offensive_list.html', {'comments': comments})

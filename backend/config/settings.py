@@ -13,8 +13,10 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, 'config', '.env'))  # .env 위치 지정
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 
 # Quick-start development settings - unsuitable for production
@@ -56,6 +58,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -82,8 +86,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  # ← mysql로 변경
+        'NAME': 'Clean_Us_DB',                  # 사용할 DB 이름
+        'USER': 'root',                        # DB 사용자명
+        'PASSWORD': 'rlaqudwo@0814',           # 비밀번호
+        'HOST': 'localhost',                   # 로컬이면 localhost
+        'PORT': '3306',                        # 기본 포트
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
@@ -131,7 +142,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.User'
 
-LOGIN_URL = '/accounts/login/'
+# 이메일 백엔드
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# Gmail SMTP 서버 설정
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# 너의 Gmail 계정
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+LOGIN_URL = '/user/login/'
+#LOGIN_URL = '/accounts/login/'
 # 1) 쿠키에 크리덴셜(세션id, csrftoken) 포함 허용
 CORS_ALLOW_CREDENTIALS = True
 

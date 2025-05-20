@@ -26,6 +26,7 @@ class User(AbstractUser):
     
     failed_attempts = models.IntegerField(default=0)  # 로그인 실패 횟수 저장
     is_locked = models.BooleanField(default=False)    # 계정 잠김 여부
+    is_active = models.BooleanField(default=False)    # 인증 전까지 비활성 상태
 
     def lock_account(self): 
         self.is_locked = True
