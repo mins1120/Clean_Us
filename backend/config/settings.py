@@ -86,8 +86,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  # ← mysql로 변경
+        'NAME': 'Clean_Us_DB',                  # 사용할 DB 이름
+        'USER': 'root',                        # DB 사용자명
+        'PASSWORD': 'rlaqudwo@0814',           # 비밀번호
+        'HOST': 'localhost',                   # 로컬이면 localhost
+        'PORT': '3306',                        # 기본 포트
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
@@ -149,8 +156,8 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
-
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/user/login/'
+#LOGIN_URL = '/accounts/login/'
 # 1) 쿠키에 크리덴셜(세션id, csrftoken) 포함 허용
 CORS_ALLOW_CREDENTIALS = True
 

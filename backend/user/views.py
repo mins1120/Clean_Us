@@ -225,7 +225,8 @@ def api_login_view(request):
                 login(request, user_auth)
                 user.failed_attempts = 0
                 user.save()
-                return JsonResponse({'message': '로그인 성공'}, status=200)
+                return redirect('user:mypage')  # ← 마이페이지로 리디렉션
+                #return JsonResponse({'message': '로그인 성공'}, status=200)
             else:
                 # 로그인 실패: 실패 횟수 증가
                 user.failed_attempts += 1
@@ -253,12 +254,11 @@ def api_logout_view(request):
         return JsonResponse({'message': '로그아웃 성공'}, status=200)
     return JsonResponse({'message': 'POST 요청만 허용됩니다.'}, status=405)
 
-
-
-
-
- 
-
-    
-
-       
+@login_required
+def delete_account_view(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)        # 로그아웃 먼저
+        user.delete()          # 유저 삭제
+        return render(request, 'user/account_deleted.html')  # 탈퇴 완료 페이지
+    return render(request, 'user/confirm_delete.html')  # 탈퇴 확인 페이지
