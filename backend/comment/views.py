@@ -10,7 +10,7 @@ def comment_list_view(request):
 
 # Create your views here.
 
-@csrf_exempt
+""" @csrf_exempt
 def create_comment(request):
     if request.method == 'POST':
         content = request.POST.get("content")
@@ -28,7 +28,7 @@ def create_comment(request):
             'result': 'ok',
             'is_offensive': is_bad,
             'keyword': keyword
-        })
+        }) """
     
 def offensive_comment_page(request):
     comments = Comment.objects.filter(is_offensive=True).order_by('-created_at')
