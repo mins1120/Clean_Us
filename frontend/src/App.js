@@ -5,10 +5,17 @@ import KeywordPage from './KeywordPage';
 import AddKeywordPage from './AddKeywordPage';
 import FeedbackPage from './FeedbackPage';
 import HeroSection from './HeroSection';
-import SectionHeading from './SectionHeading';
-import MissionSection from './MissionSection';
+import AboutSection from './AboutSection'; // ✅ 새로운 컴포넌트
+import MainFunctionSection from './MainFunctionSection';
+import FeatureSection from './FeatureSection';
+import ReviewSection from './ReviewSection';
+import FaqSection from './FaqSection';
 import './App.css';
 import axios from 'axios';
+
+// ✅ AOS import
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 axios.defaults.withCredentials = true;
@@ -20,6 +27,14 @@ function App() {
     axios.get('/csrf/').catch(() => {});
   }, []);
 
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: false,
+    });
+    AOS.refresh();
+  }, []);
+
   return (
     <Router>
       <Routes>
@@ -29,8 +44,11 @@ function App() {
             element={
               <>
                 <HeroSection />
-                <SectionHeading />
-                <MissionSection />
+                <AboutSection /> {/* ✅ 섹션 통합 */}
+                <MainFunctionSection />
+                <FeatureSection />
+                <ReviewSection />
+                <FaqSection />
               </>
             }
           />
