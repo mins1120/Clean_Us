@@ -10,6 +10,9 @@ import MainFunctionSection from './MainFunctionSection';
 import FeatureSection from './FeatureSection';
 import ReviewSection from './ReviewSection';
 import FaqSection from './FaqSection';
+import LoginPage from './LoginPage.jsx';
+import SignupPage from './SignupPage.jsx';
+
 import './App.css';
 import axios from 'axios';
 
@@ -38,13 +41,15 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/" element={<BaseLayout />}>
           <Route
             index
             element={
               <>
                 <HeroSection />
-                <AboutSection /> {/* ✅ 섹션 통합 */}
+                <AboutSection />
                 <MainFunctionSection />
                 <FeatureSection />
                 <ReviewSection />

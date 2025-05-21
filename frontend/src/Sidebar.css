@@ -1,9 +1,10 @@
-/* Sidebar 전체 레이아웃 */
+/* ✅ 사이드바 레이아웃 */
 .sidebar {
   position: fixed;
   top: 0;
-  right: -300px;
+  right: -100%;
   width: 250px;
+  max-width: 80vw;
   height: 100%;
   background-color: white;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
@@ -18,27 +19,30 @@
   right: 0;
 }
 
-/* Sidebar 내부 콘텐츠 */
+/* ✅ 닫기 버튼 */
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2100;
+}
+
+/* ✅ 내부 콘텐츠 */
 .sidebar-content {
   display: flex;
   flex-direction: column;
 }
 
-/* 닫기 버튼 */
-.close-btn {
-  position: absolute;
-  margin-left: 11rem;
-  font-size: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-/* 섹션 구성 */
+/* ✅ 섹션 */
 .sidebar-section {
   margin-bottom: 32px;
 }
 
+/* ✅ 섹션 제목 */
 .section-title {
   font-size: 16px;
   font-weight: bold;
@@ -50,6 +54,7 @@
   padding-bottom: 4px;
 }
 
+/* ✅ 리스트 */
 .sidebar-list {
   list-style: none;
   padding-left: 12px;
@@ -68,4 +73,26 @@
 
 .sidebar-list li a:hover {
   text-decoration: underline;
+}
+
+/* ✅ 반응형 처리 */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 80%;
+    padding: 16px;
+  }
+
+  .section-title {
+    font-size: 15px;
+  }
+
+  .sidebar-list li {
+    font-size: 13px;
+  }
+
+  .close-btn {
+    font-size: 22px;
+    top: 16px;
+    right: 16px;
+  }
 }

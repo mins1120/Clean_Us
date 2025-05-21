@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, Link } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import './BaseLayout.css';
 
@@ -15,14 +15,24 @@ function BaseLayout() {
   return (
     <div className="app-layout">
       <header className="header">
-        <div className="logo">Clean Us</div>
-        {!sidebarOpen && (
-          <div className="hamburger" onClick={toggleSidebar}>
-            <div></div>
-            <div></div>
-            <div></div>
+        <div className="logo">
+          <Link to="/" className="logo-link">Clean Us</Link>
+        </div>
+
+        <div className="header-right">
+          <div className="auth-buttons">
+            <a href="/login">로그인</a>
+            <a href="/signup">회원가입</a>
           </div>
-        )}
+
+          {!sidebarOpen && (
+            <div className="hamburger" onClick={toggleSidebar}>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          )}
+        </div>
       </header>
 
       <div className={`main-content ${isHome ? 'no-padding' : ''}`}>

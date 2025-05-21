@@ -40,3 +40,40 @@
   background-color: white;
   color: black;
 }
+
+/* ✅ 반응형 미디어 쿼리 추가 */
+
+@media (max-width: 768px) {
+  .hero-content {
+    max-width: 90%;
+    padding: 0 20px;
+  }
+
+  .hero-content h1 {
+    font-size: 32px;
+  }
+
+  .tagline {
+    font-size: 16px;
+  }
+
+  .start-button {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 26px;
+  }
+
+  .tagline {
+    font-size: 14px;
+  }
+
+  .start-button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
