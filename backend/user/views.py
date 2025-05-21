@@ -20,20 +20,31 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse  
 from django.contrib.auth import logout
+from django.views.decorators.http import require_POST
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-
-
-
+@csrf_exempt
 @login_required
 def mypage_view(request):
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect('user:mypage_success')
+            return JsonResponse({'message': '회원 정보가 성공적으로 수정되었습니다.'}, status=200)
+        else:
+            return JsonResponse({'errors': form.errors}, status=400)
     else:
-        form = UserUpdateForm(instance=request.user)
-    return render(request, 'user/mypage.html', {'form': form})
+        # GET 요청 시 현재 사용자 정보 전달
+        user = request.user
+        return JsonResponse({
+            'username': user.username,
+            'email': user.email,
+            'name': user.name,
+        }, status=200)
 
 @login_required
 def mypage_success_view(request):
@@ -42,9 +53,16 @@ def mypage_success_view(request):
 def user_home(request):
     return render(request, 'user/home.html')
 
-class CustomPasswordChangeView(PasswordChangeView):
-    template_name = 'user/change_password.html'
-    success_url = reverse_lazy('password_change_done')
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password_api(request):
+    form = PasswordChangeForm(user=request.user, data=request.data)
+    if form.is_valid():
+        user = form.save()
+        update_session_auth_hash(request, user)  # 비밀번호 바꿔도 세션 유지
+        return Response({'message': '비밀번호가 성공적으로 변경되었습니다.'}, status=200)
+    else:
+        return Response({'errors': form.errors}, status=400)
 
 MAX_LOGIN_ATTEMPTS = 5  # 최대 로그인 실패 횟수
 
@@ -254,11 +272,10 @@ def api_logout_view(request):
         return JsonResponse({'message': '로그아웃 성공'}, status=200)
     return JsonResponse({'message': 'POST 요청만 허용됩니다.'}, status=405)
 
+@require_POST
 @login_required
 def delete_account_view(request):
-    if request.method == 'POST':
-        user = request.user
-        logout(request)        # 로그아웃 먼저
-        user.delete()          # 유저 삭제
-        return render(request, 'user/account_deleted.html')  # 탈퇴 완료 페이지
-    return render(request, 'user/confirm_delete.html')  # 탈퇴 확인 페이지
+    user = request.user
+    logout(request)        # 로그아웃 먼저
+    user.delete()          # 유저 삭제
+    return JsonResponse({'message': '회원 탈퇴가 완료되었습니다.'}, status=200)

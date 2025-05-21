@@ -3,11 +3,23 @@ from .models import Comment
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .ai_utils import check_offensive
+from django.views.decorators.http import require_GET
 
+@require_GET
 def comment_list_view(request):
     comments = Comment.objects.all().order_by('-created_at')
-    return render(request, 'comment/comment_list.html', {'comments': comments})
-
+    comment_data = [
+        {
+            'id': c.id,
+            'author': c.author.username if c.author else None,
+            'content': c.content,
+            'is_offensive': c.is_offensive,
+            'offensive_keyword': c.offensive_reason,
+            'created_at': c.created_at.strftime('%Y-%m-%d %H:%M')
+        }
+        for c in comments
+    ]
+    return JsonResponse({'comments': comment_data}, status=200)
 # Create your views here.
 
 """ @csrf_exempt
@@ -30,6 +42,17 @@ def create_comment(request):
             'keyword': keyword
         }) """
     
+@require_GET
 def offensive_comment_page(request):
     comments = Comment.objects.filter(is_offensive=True).order_by('-created_at')
-    return render(request, 'comment/offensive_list.html', {'comments': comments})
+    data = [
+        {
+            'id': c.id,
+            'author': c.author.username if c.author else None,
+            'content': c.content,
+            'offensive_keyword': c.offensive_reason,
+            'created_at': c.created_at.strftime('%Y-%m-%d %H:%M')
+        }
+        for c in comments
+    ]
+    return JsonResponse({'offensive_comments': data}, status=200)
