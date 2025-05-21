@@ -1,0 +1,80 @@
+.main-function-section {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.sub-title {
+  color: #6b9e42;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.main-title {
+  font-size: 36px;
+  font-family: 'Noto Serif KR', serif;
+  letter-spacing: 2px;
+  margin-bottom: 60px;
+}
+
+.function-grid {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.function-item {
+  width: 260px;
+}
+
+.function-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.function-item p {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* ✅ 반응형 미디어 쿼리 추가 */
+
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 28px;
+  }
+
+  .function-grid {
+    gap: 40px;
+  }
+
+  .function-item {
+    width: 80%;
+    max-width: 300px;
+  }
+
+  .function-item p {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 24px;
+  }
+
+  .sub-title {
+    font-size: 16px;
+  }
+
+  .function-item {
+    width: 100%;
+  }
+
+  .function-item p {
+    font-size: 14px;
+  }
+}

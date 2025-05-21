@@ -1,17 +1,150 @@
-/* BaseLayout.css */
 .app-layout {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
+/* ✅ 헤더 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #eee;
+  background-color: white;
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+}
+
+.logo {
+  font-size: 32px;
+  font-weight: bold;
+  font-family: 'Georgia', serif;
+  white-space: nowrap;
+}
+
+/* ✅ 로고 링크 스타일 유지 */
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ✅ 헤더 오른쪽 정렬 그룹 */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ✅ 로그인/회원가입 */
+.auth-buttons {
+  display: flex;
+  gap: 14px;
+  margin-right: 30px; /* ← 추가 */
+}
+
+.auth-buttons a {
+  font-size: 13px;
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-buttons a:hover {
+  text-decoration: underline;
+}
+
+
+/* ✅ 햄버거 메뉴 */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.hamburger div {
+  width: 24px;
+  height: 2px;
+  background-color: black;
+  margin: 3px 0;
+}
+
+/* ✅ 메인 콘텐츠 */
 .main-content {
   flex: 1;
   padding: 40px;
 }
 
+.main-content.no-padding {
+  padding: 0;
+}
+
+/* ✅ 푸터 */
 .footer {
-  margin-top: 50px;
-  font-size: 14px;
-  text-align: center;
-  color: #888;
+  width: 100%;
+  padding: 40px 0;
+  font-size: 12px;
+  color: white;
+  background-color: #6b9e42;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.footer-content {
+  max-width: 900px;
+  padding-right: 900px;
+  text-align: left;
+}
+
+.footer-content h2 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* ✅ 사이드바 */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 250px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease-in-out;
+  z-index: 2000;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+/* ✅ 반응형 대응 */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: row;
+    padding: 10px 16px;
+  }
+
+  .auth-buttons {
+    gap: 10px;
+  }
+
+  .auth-buttons a {
+    font-size: 14px;
+  }
+
+  .footer-content {
+    padding-right: 16px;
+    font-size: 11px;
+  }
+
+  .hamburger {
+    margin-left: 4px;
+  }
 }
