@@ -86,15 +86,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # ← mysql로 변경
-        'NAME': 'Clean_Us_DB',                  # 사용할 DB 이름
-        'USER': 'root',                        # DB 사용자명
-        'PASSWORD': 'rlaqudwo@0814',           # 비밀번호
-        'HOST': 'localhost',                   # 로컬이면 localhost
-        'PORT': '3306',                        # 기본 포트
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
