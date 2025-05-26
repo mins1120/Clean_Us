@@ -1,0 +1,136 @@
+/* 전체 섹션 컨테이너 */
+.about-section {
+  margin: 0;
+  padding: 0;
+}
+
+/* 흰 배경 스크롤 텍스트 영역 (50%) */
+.scroll-text-container {
+  background-color: white;
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  position: relative;
+}
+
+.scroll-text {
+  position: absolute;
+  white-space: nowrap;
+  font-size: 150px;
+  font-weight: 400;
+  font-family: 'Playfair Display', serif;
+  color: #555;
+  opacity: 0.1;
+  animation: slideLeft 35s linear infinite;
+}
+
+@keyframes slideLeft {
+  0% {
+    right: -100%;
+  }
+  100% {
+    right: 100%;
+  }
+}
+
+/* 와인색 배경 시작 (50%) */
+.about-body {
+  background-color: #4a1b2b;
+  padding-top: 0;
+  padding-bottom: 80px;
+  color: white;
+}
+
+/* 이미지 박스 */
+.about-image-wrapper {
+  max-width: 500px;
+  margin: -120px auto 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.about-image-wrapper img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* 아래 Mission/Vision/Values 카드 */
+.mission-content {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.mission-item {
+  max-width: 300px;
+  text-align: center;
+}
+
+.mission-item h3 {
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: #f2cd3f;
+  font-weight: bold;
+}
+
+.mission-item h3 span {
+  font-style: italic;
+  color: white;
+  margin-left: 8px;
+}
+
+.mission-item p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #e0e0e0;
+}
+
+/* ✅ 반응형 미디어 쿼리 추가 */
+
+@media (max-width: 768px) {
+  .scroll-text {
+    font-size: 80px;
+  }
+
+  .about-image-wrapper {
+    max-width: 90%;
+    margin: -80px auto 30px;
+  }
+
+  .mission-content {
+    gap: 40px;
+  }
+
+  .mission-item h3 {
+    font-size: 18px;
+  }
+
+  .mission-item p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-text-container {
+    height: 40vh;
+  }
+
+  .scroll-text {
+    font-size: 60px;
+  }
+
+  .mission-item h3 {
+    font-size: 16px;
+  }
+
+  .mission-item p {
+    font-size: 13px;
+  }
+}
