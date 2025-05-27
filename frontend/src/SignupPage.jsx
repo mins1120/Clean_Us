@@ -23,7 +23,7 @@ const SignupPage = () => {
 
     try {
       // 3. Django 백엔드에 회원가입 요청
-      const response = await axios.post('/user/signup/', {
+      const response = await axios.post('http://localhost:8000/user/signup/', {
         name,
         email,
         password,

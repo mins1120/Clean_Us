@@ -9,10 +9,15 @@ function Sidebar({ onClose }) {
     const confirmed = window.confirm('정말 로그아웃하시겠습니까?');
     if (confirmed) {
       try {
-        await axios.post('http://127.0.0.1:8000/user/api/logout/', {}, {
+        await axios.post('http://localhost:8000/user/api/logout/', {}, {
           withCredentials: true
         });
-        window.location.href = '/';
+
+      
+      document.cookie = "sessionid=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "csrftoken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+      window.location.href = '/'; //홈으로 이동
       } catch (error) {
         console.error('로그아웃 실패:', error);
       }
