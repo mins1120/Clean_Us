@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost'] #05-21 비어있어서 채워놓음
 
 
 # Application definition
@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+#CORS_ALLOW_ALL_ORIGINS = True 
 
 ROOT_URLCONF = 'config.urls'
 
@@ -135,6 +135,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.User'
 
+
+
+
 # 이메일 백엔드
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -150,9 +153,16 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 LOGIN_URL = '/user/login/'
+#LOGIN_URL = '/accounts/login/'#05-20 수정 마이페이지에서 로그인이 계속 필요하다고 해서 경로 바꿈.
+LOGIN_URL = '/user/login/'
 #LOGIN_URL = '/accounts/login/'
 # 1) 쿠키에 크리덴셜(세션id, csrftoken) 포함 허용
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React 앱 주소
+    
+]
 
 # 2) React 개발 서버를 신뢰 도메인으로 추가
 CORS_ORIGIN_WHITELIST = [
@@ -161,9 +171,20 @@ CORS_ORIGIN_WHITELIST = [
 
 # 3) CSRF 토큰을 신뢰할 외부 도메인
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
+    "http://localhost:3000",
+    
 ]
 
+# ✅ Django가 쿠키를 cross-origin에서도 인식하도록 설정
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False  # 개발 환경에서는 False로, 배포 시 True로!
 # 4) (필요 시) SameSite=None 으로 변경
-CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = False
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend', #Django 기본 인증 로직을 사용하겠다는 의미
+]
+
+SESSION_COOKIE_DOMAIN = 'localhost'
+CSRF_COOKIE_DOMAIN = 'localhost'
