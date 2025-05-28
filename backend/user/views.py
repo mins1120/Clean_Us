@@ -26,6 +26,8 @@ from django.contrib.auth import update_session_auth_hash
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.contrib.auth.views import PasswordChangeView
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 @csrf_exempt
 @login_required
@@ -66,6 +68,7 @@ def change_password_api(request):
 
 MAX_LOGIN_ATTEMPTS = 5  # 최대 로그인 실패 횟수
 
+@ensure_csrf_cookie
 def Login(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -111,12 +114,12 @@ def Logout(request):
 
 
 
-def signup_view(request):
+def test_signup_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)       # 저장 전 유저 객체 생성
-            user.is_active = False               # 이메일 인증 전까지 로그인 비활성화
+            user.is_active = True               # 이메일 인증 전까지 로그인 비활성화
             user.save()                          # 유저 저장
             send_verification_email(user, request)  #  이메일 인증 링크 전송
             return render(request, 'user/email_check_notice.html')  # 이메일 확인 안내 페이지
@@ -279,3 +282,6 @@ def delete_account_view(request):
     logout(request)        # 로그아웃 먼저
     user.delete()          # 유저 삭제
     return JsonResponse({'message': '회원 탈퇴가 완료되었습니다.'}, status=200)
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'user/change_password.html'  # 네 템플릿 경로에 맞게 수정

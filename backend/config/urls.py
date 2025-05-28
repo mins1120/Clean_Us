@@ -24,6 +24,7 @@ urlpatterns = [
     path('user/', include(('user.urls', 'user'), namespace='user')),  # ✅ 네임스페이스 등록
     path('preference/', include('preference.urls')),
     path('comment/', include('comment.urls')),
+
     # 루트(/) 요청 오면 user 앱의 로그인 페이지나 다른 페이지로 리디렉트
      #path('', lambda request: redirect('user:main')),  # ✅ 네임스페이스 기반 리디렉트
 ]
