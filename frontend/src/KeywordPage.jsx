@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import './KeywordPage.css';
 
 function KeywordPage() {
   const [keywords, setKeywords] = useState([]);
@@ -31,22 +32,21 @@ function KeywordPage() {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="keyword-container">
       <h2>내 키워드 필터링 목록</h2>
-      <ul>
+      <ul className="keyword-list">
         {keywords.map(k => (
-          <li key={k.id}>
-            <strong>{k.keyword}</strong> (민감도: {k.sensitive})
-            <button onClick={() => handleDelete(k.id)} style={{ marginLeft: 10 }}>
-              삭제
-            </button>
+          <li key={k.id} className="keyword-item">
+            <span className="keyword-item-text">
+              <strong>{k.keyword}</strong> (민감도: {k.sensitive})
+            </span>
+            <button onClick={() => handleDelete(k.id)}>삭제</button>
           </li>
         ))}
       </ul>
 
-      {/* 새 페이지로 이동 */}
       <Link to="/keywords/add">
-        <button style={{ marginTop: 20 }}>키워드 추가</button>
+        <button className="add-button">키워드 추가</button>
       </Link>
     </div>
   );

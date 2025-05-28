@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BaseLayout from './BaseLayout';
@@ -5,7 +6,7 @@ import KeywordPage from './KeywordPage';
 import AddKeywordPage from './AddKeywordPage';
 import FeedbackPage from './FeedbackPage';
 import HeroSection from './HeroSection';
-import AboutSection from './AboutSection'; // ✅ 새로운 컴포넌트
+import AboutSection from './AboutSection';
 import MainFunctionSection from './MainFunctionSection';
 import FeatureSection from './FeatureSection';
 import ReviewSection from './ReviewSection';
@@ -41,8 +42,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        {/* ✅ BaseLayout 내부에 모든 페이지를 포함 */}
         <Route path="/" element={<BaseLayout />}>
           <Route
             index
@@ -57,6 +57,8 @@ function App() {
               </>
             }
           />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
           <Route path="keywords" element={<KeywordPage />} />
           <Route path="keywords/add" element={<AddKeywordPage />} />
           <Route path="feedbacks" element={<FeedbackPage />} />

@@ -1,6 +1,8 @@
+// src/FeedbackPage.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './FeedbackPage.css';
 
 function FeedbackPage() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -8,7 +10,6 @@ function FeedbackPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // CSRF 토큰, 쿠키 설정은 App.js에서 초기화됨
     fetchFeedbacks();
   }, []);
 
@@ -33,22 +34,20 @@ function FeedbackPage() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="feedback-container">
       <h2>내 피드백 목록</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
       <ul>
         {feedbacks.map((fb) => (
-          <li key={fb.id} style={{ marginBottom: '10px' }}>
+          <li key={fb.id} className="feedback-item">
             <p><strong>댓글 내용:</strong> {fb.comment_content}</p>
             <p><strong>피드백 유형:</strong> {fb.result}</p>
             <p><strong>제출 시간:</strong> {new Date(fb.submitted_at).toLocaleString()}</p>
-            <button onClick={() => handleDelete(fb.id)} style={{ marginTop: '5px' }}>
-              피드백 삭제
-            </button>
+            <button onClick={() => handleDelete(fb.id)}>피드백 삭제</button>
           </li>
         ))}
       </ul>
-      <button onClick={() => navigate(-1)} style={{ marginTop: '20px' }}>
+      <button className="back-button" onClick={() => navigate(-1)}>
         뒤로 가기
       </button>
     </div>

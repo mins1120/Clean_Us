@@ -1,10 +1,11 @@
-// src/Sidebar.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Sidebar.css';
 
 function Sidebar({ onClose }) {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
   const handleLogout = async () => {
     const confirmed = window.confirm('정말 로그아웃하시겠습니까?');
     if (confirmed) {
@@ -12,6 +13,7 @@ function Sidebar({ onClose }) {
         await axios.post('http://127.0.0.1:8000/user/api/logout/', {}, {
           withCredentials: true
         });
+        localStorage.removeItem('isLoggedIn'); // ✅ 상태 초기화
         window.location.href = '/';
       } catch (error) {
         console.error('로그아웃 실패:', error);
@@ -26,9 +28,15 @@ function Sidebar({ onClose }) {
       <div className="sidebar-section">
         <h3 className="section-title with-border">홈페이지</h3>
         <ul className="sidebar-list">
-          <li><Link to="/login">로그인</Link></li>
-          <li><Link to="/signup">회원가입</Link></li>
-          <li><Link to="/mypage">마이페이지</Link></li>
+          {!isLoggedIn && (
+            <>
+              <li><Link to="/login">로그인</Link></li>
+              <li><Link to="/signup">회원가입</Link></li>
+            </>
+          )}
+          {isLoggedIn && (
+            <li><Link to="/mypage">마이페이지</Link></li>
+          )}
         </ul>
       </div>
 
@@ -45,22 +53,24 @@ function Sidebar({ onClose }) {
         <ul className="sidebar-list">
           <li><Link to="/feedbacks">사용자 피드백</Link></li>
           <li><Link to="/keywords">키워드 설정</Link></li>
-          <li>
-            <button
-              onClick={handleLogout}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#000',
-                padding: 0,
-                cursor: 'pointer',
-                textAlign: 'left',
-                fontSize: 'inherit'
-              }}
-            >
-              로그아웃
-            </button>
-          </li>
+          {isLoggedIn && (
+            <li>
+              <button
+                onClick={handleLogout}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#000',
+                  padding: 0,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  fontSize: 'inherit'
+                }}
+              >
+                로그아웃
+              </button>
+            </li>
+          )}
         </ul>
       </div>
     </nav>
