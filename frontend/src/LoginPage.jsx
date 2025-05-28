@@ -1,33 +1,49 @@
 // src/LoginPage.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
-import './LoginPage.css';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  // 입력값 상태 관리
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
+  // 로그인 요청 함수
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault();  // 기본 폼 제출 막기
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/user/api/login/', {
+      const response = await axios.post('http://localhost:8000/user/api/login/', {
         email,
         password,
       }, {
-        withCredentials: true
+        withCredentials: true,  // 세션 쿠키 저장을 위해 필요
+         headers: {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest', 
+  }
       });
 
       if (response.data.message === '로그인 성공') {
-        localStorage.setItem('isLoggedIn', 'true');
-        window.location.href = '/';
-      } else {
-        setMessage(response.data.message);
-      }
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
-        setMessage(error.response.data.message);
+        const csrfRes = await axios.get('http://localhost:8000/user/csrf/', {
+          withCredentials: true
+        });
+
+
+        console.log('📦 현재 document.cookie:', document.cookie);
+        // navigate('/'); 
+        
+        window.location.href = 'http://localhost:3000';
+    } else {
+      setMessage(response.data.message);
+    }
+    } 
+    
+    catch (error) {
+      if (error.response) {
+        setMessage(error.response.data.message);  // 백엔드 오류 메시지 출력
       } else {
         setMessage("서버와 연결할 수 없습니다.");
       }
@@ -35,34 +51,26 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
+    <div>
+      <h2>로그인</h2>
       <form onSubmit={handleLogin}>
-        <label>아이디</label>
         <input
           type="email"
-          placeholder="이메일을 입력해 주세요."
+          placeholder="이메일"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-        />
-        <label>비밀번호</label>
+        /><br />
         <input
           type="password"
-          placeholder="비밀번호를 입력해 주세요."
+          placeholder="비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-        />
+        /><br />
         <button type="submit">로그인</button>
       </form>
-
-      <div className="login-footer">
-        <a href="/signup">회원가입</a>
-        <a href="#">아이디/비밀번호 찾기</a>
-      </div>
-
-      {message && <p className="error-message">{message}</p>}
+      {message && <p>{message}</p>}
     </div>
   );
 };

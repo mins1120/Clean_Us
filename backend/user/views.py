@@ -1,33 +1,27 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .forms import UserUpdateForm
+from .forms import UserUpdateForm, CustomUserCreationForm
 from django.contrib.auth.views import PasswordChangeView
-from django.urls import reverse_lazy
-from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse_lazy, reverse 
+from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib import messages
-from user.models import User
-from django.http import HttpResponse
-from user.forms import CustomUserCreationForm  # 아까 만든 폼
+from .models import User
+from django.http import HttpResponse, JsonResponse 
 from django.conf import settings
 from django.core.mail import send_mail   #메일 전송
-from django.utils.http import urlsafe_base64_encode   #사용자 ID를 URL-safe하게 인코딩
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode   #사용자 ID를 URL-safe하게 인코딩
 from django.utils.encoding import force_bytes   
 from django.contrib.auth.tokens import default_token_generator   #인증 토큰 생성 & 검증
-from django.urls import reverse    #인증 링크 생성용
-from django.contrib.auth import get_user_model  # verify_email용
-from django.utils.http import urlsafe_base64_decode
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie, csrf_protect
 import json
-from django.http import JsonResponse  
-from django.contrib.auth import logout
+from django.middleware.csrf import get_token
 from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-@csrf_exempt
+@csrf_exempt 
 @login_required
 def mypage_view(request):
     if request.method == 'POST':
@@ -53,6 +47,12 @@ def mypage_success_view(request):
 def user_home(request):
     return render(request, 'user/home.html')
 
+
+class CustomPasswordChangeView(PasswordChangeView):  # ✅ 사용자에게 보여줄 비밀번호 변경 HTML 템플릿 경로 지정
+    template_name = 'user/change_password.html'
+    #  비밀번호 변경 성공 후 이동할 URL (urls.py에서 이름 설정한 경로)
+    success_url = reverse_lazy('password_change_done')
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_password_api(request):
@@ -63,6 +63,22 @@ def change_password_api(request):
         return Response({'message': '비밀번호가 성공적으로 변경되었습니다.'}, status=200)
     else:
         return Response({'errors': form.errors}, status=400)
+
+# 🔹 [PUT] 사용자 이름 수정 처리
+@csrf_exempt
+@login_required
+def api_mypage_update(request):
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            user = request.user
+            user.username = data.get('name', user.username)
+            user.save()
+            return JsonResponse({'message': '정보 수정 완료'})
+        except Exception as e:
+            return JsonResponse({'error': '정보 수정 실패'}, status=500)
+
+    return JsonResponse({'error': 'PUT 요청만 허용됩니다.'}, status=405)
 
 MAX_LOGIN_ATTEMPTS = 5  # 최대 로그인 실패 횟수
 
@@ -179,7 +195,7 @@ def verify_email(request, uidb64, token):
 #     return HttpResponse("이메일 전송 완료!")
 
 @csrf_exempt
-def signup_view(request):
+def api_signup_view(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -199,13 +215,17 @@ def signup_view(request):
                 password=password,
                 is_active=False
             )
-            print(user, request)
+            print("✅ 유저 생성됨:", user.email)
 
+        
             send_verification_email(user, request)
+            print("📧 이메일 전송 완료")  # ⭐️ 이게 안 뜨면 메일 문제!
             return JsonResponse({'message': '회원가입 성공. 이메일 인증 필요.'}, status=201)
 
         except Exception as e:
-            print("에러:", e)
+            import traceback
+            print("❌ 회원가입 전체 에러 발생:")
+            traceback.print_exc()
             return JsonResponse({'error': '회원가입 처리 중 오류 발생'}, status=500)
 
     return JsonResponse({'error': 'POST 요청만 허용됩니다.'}, status=405)
@@ -243,8 +263,8 @@ def api_login_view(request):
                 login(request, user_auth)
                 user.failed_attempts = 0
                 user.save()
-                return redirect('user:mypage')  # ← 마이페이지로 리디렉션
-                #return JsonResponse({'message': '로그인 성공'}, status=200)
+                #return redirect('user:mypage')  # ← 마이페이지로 리디렉션
+                return JsonResponse({'message': '로그인 성공'}, status=200)
             else:
                 # 로그인 실패: 실패 횟수 증가
                 user.failed_attempts += 1
@@ -268,10 +288,107 @@ def api_login_view(request):
 @csrf_exempt
 def api_logout_view(request):
     if request.method == 'POST':
-        logout(request)
-        return JsonResponse({'message': '로그아웃 성공'}, status=200)
+        # 사용자 로그아웃 & 세션 비우기
+        logout(request)           # 내부적으로 session.flush() 까지 해 줍니다
+        request.session.modified = False  
+        # → 이 한 줄이 없으면 Django가 새 세션 키를 만들어 쿠키를 재발행해 버립니다
+
+        # 응답 생성 & 쿠키 삭제
+        response = JsonResponse({'message': '로그아웃 성공'})
+        # 호스트 전용 쿠키 삭제
+        response.delete_cookie(settings.SESSION_COOKIE_NAME, path='/')
+        response.delete_cookie(settings.SESSION_COOKIE_NAME, path='/', domain='localhost')
+        response.delete_cookie(settings.CSRF_COOKIE_NAME,   path='/', domain='localhost')
+        print("request.COOKIES:", request.COOKIES)
+        print(response)
+        return response
+
     return JsonResponse({'message': 'POST 요청만 허용됩니다.'}, status=405)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_mypage_detail(request):
+    if request.user:
+        user = request.user
+        print(user.email, user.username)
+        return Response({
+        'email': user.email,
+        'name': user.username
+        })
+    print('로그인 X ')
+    return Response({
+        'email': None,
+        'name': None
+    })
+
+# ✅ [PUT] React에서 마이페이지 수정 요청 처리
+@csrf_exempt
+@login_required
+def api_mypage_update(request):
+    if request.method == 'PUT':
+        try:
+            # 요청 body에서 JSON 데이터 파싱
+            data = json.loads(request.body)
+            
+            # 현재 로그인한 유저 가져오기
+            user = request.user
+            
+            # username(이름)을 수정 (값이 없으면 기존 값 유지)
+            user.username = data.get('name', user.username)
+            
+            # 수정된 정보 저장
+            user.save()
+            
+            # 성공 응답 반환
+            return JsonResponse({'message': '정보 수정 완료'})
+        
+        except Exception as e:
+            # 에러 발생 시 500 응답
+            return JsonResponse({'error': '정보 수정 실패'}, status=500)
+
+    # PUT 이외의 요청은 허용하지 않음   
+    return JsonResponse({'error': 'PUT 요청만 허용됩니다.'}, status=405)
+
+#@ensure_csrf_cookie
+#def csrf_token_view(request):
+ #   return JsonResponse({'message': 'CSRF cookie set'})
+
+# def csrf_token_view(request):
+#     csrf_token = get_token(request)
+#     print('📦 CSRF 토큰 (서버에서 발급):', csrf_token)
+
+#     response = JsonResponse({
+#         'message': 'CSRF 쿠키 설정 완료',
+#         'csrftoken': csrf_token
+#     })
+#     print(response)
+#     response.set_cookie(
+#         'csrftoken',
+#         csrf_token,
+#         samesite='None',     
+#         secure=False,       # HTTPS 쓸 땐 True
+#         httponly=False      # JS에서 읽어야 하므로 False
+#     )
+#     print(response)
+
+#     return response
+
+@ensure_csrf_cookie
+def csrf_token_view(request):
+    csrf_token = get_token(request)
+    print("📦 서버에서 발급된 CSRF:", csrf_token)
+    
+    request.session.accessed = False
+    request.session.modified = False
+    return JsonResponse({
+        "message": "CSRF 쿠키 설정 완료"
+    })
+
+
+
+ 
+       
 @require_POST
 @login_required
 def delete_account_view(request):
