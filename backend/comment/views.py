@@ -1,17 +1,23 @@
 from django.shortcuts import render
+# Create your views here.
 from .models import Comment
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .ai_utils import check_offensive
 from django.views.decorators.http import require_GET
+from rest_framework.decorators import api_view
+from django.contrib.auth.decorators import login_required
+from rest_framework.response import Response
+from django.utils import timezone
+from datetime import timedelta
+from .serializers import FilteredCommentSerializer
 
 @require_GET
 def comment_list_view(request):
-    comments = Comment.objects.all().order_by('-created_at')
+    comments = Comment.objects.filter(user_id=request.user).order_by('-created_at')
     comment_data = [
         {
             'id': c.id,
-            'author': c.author.username if c.author else None,
             'content': c.content,
             'is_offensive': c.is_offensive,
             'offensive_keyword': c.offensive_reason,
@@ -20,7 +26,6 @@ def comment_list_view(request):
         for c in comments
     ]
     return JsonResponse({'comments': comment_data}, status=200)
-# Create your views here.
 
 """ @csrf_exempt
 def create_comment(request):
@@ -44,11 +49,10 @@ def create_comment(request):
     
 @require_GET
 def offensive_comment_page(request):
-    comments = Comment.objects.filter(is_offensive=True).order_by('-created_at')
+    comments = Comment.objects.filter(is_offensive=True, user_id=request.user).order_by('-created_at')
     data = [
         {
             'id': c.id,
-            'author': c.author.username if c.author else None,
             'content': c.content,
             'offensive_keyword': c.offensive_reason,
             'created_at': c.created_at.strftime('%Y-%m-%d %H:%M')
@@ -56,3 +60,21 @@ def offensive_comment_page(request):
         for c in comments
     ]
     return JsonResponse({'offensive_comments': data}, status=200)
+
+
+
+@api_view(['GET'])
+@login_required
+def get_recent_filtered_comments(request):
+    comments = Comment.objects.filter(
+        is_offensive=False,
+        user_id=request.user
+    ).order_by('-created_at')[:20]  # 최신 20개까지만
+
+    serializer = FilteredCommentSerializer(comments, many=True)
+    return Response(serializer.data) # REACT에 데이터 보내는 코드
+    # return render(request, 'comment/recent_filtered_comments.html', { # Django에서 테스트하려면 이거 주석 풀고 하기
+    #     'comments': serializer.data 
+    # })
+
+
