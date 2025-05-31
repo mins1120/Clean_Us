@@ -1,8 +1,10 @@
 // src/LoginPage.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   // 입력값 상태 관리
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,15 +15,27 @@ const LoginPage = () => {
     e.preventDefault();  // 기본 폼 제출 막기
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/user/api/login/', {
+      const response = await axios.post('http://localhost:8000/user/api/login/', {
         email,
         password,
       }, {
-        withCredentials: true  // 세션 쿠키 저장을 위해 필요
+        withCredentials: true,  // 세션 쿠키 저장을 위해 필요
+         headers: {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest', 
+  }
       });
 
       if (response.data.message === '로그인 성공') {
-      window.location.href = 'http://localhost:3000';  // 또는 원하는 경로
+        const csrfRes = await axios.get('http://localhost:8000/user/csrf/', {
+          withCredentials: true
+        });
+
+
+        console.log('📦 현재 document.cookie:', document.cookie);
+        // navigate('/'); 
+        
+        window.location.href = 'http://localhost:3000';
     } else {
       setMessage(response.data.message);
     }

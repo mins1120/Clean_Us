@@ -14,5 +14,10 @@ urlpatterns = [
    path('signup/', views.signup_view, name='signup'),
    path('api/login/', views.api_login_view, name='api_login'),
    path('api/logout/', views.api_logout_view, name='api_logout'),
+   path('api/mypage/detail/', views.api_mypage_detail, name='api_mypage_detail'),
+   path('api/mypage/update/', views.api_mypage_update, name='api_mypage_update'),
+   path('csrf/', views.csrf_token_view, name='csrf_token'),
    path('delete/', views.delete_account_view, name='delete_account'),
+   path('mypage/', views.mypage_view, name='mypage'),  # ← redirect('mypage') 해결용
+
 ]
