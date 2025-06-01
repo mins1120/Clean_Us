@@ -130,12 +130,12 @@ def Logout(request):
 
 
 
-def test_signup_view(request):
+def signup_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)       # 저장 전 유저 객체 생성
-            user.is_active = True               # 이메일 인증 전까지 로그인 비활성화
+            user.is_active = False               # 이메일 인증 전까지 로그인 비활성화
             user.save()                          # 유저 저장
             send_verification_email(user, request)  #  이메일 인증 링크 전송
             return render(request, 'user/email_check_notice.html')  # 이메일 확인 안내 페이지
