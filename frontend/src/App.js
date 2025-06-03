@@ -35,6 +35,7 @@ function App() {
     axios.get('/csrf/').catch(() => {});
   }, []);
 
+
   useEffect(() => {
     AOS.init({ duration: 1000, once: false });
     AOS.refresh();
@@ -69,7 +70,6 @@ function App() {
           <Route path="keywords/add" element={<AddKeywordPage />} />
           <Route path="feedbacks" element={<FeedbackPage />} />
           <Route path="/mypage" element={<Mypage />} />
-          <Route path="/mypage" element={<Mypage />} /> {/* ✅ 네 추가 코드 */}
           <Route path="/filtered-comments" element={<FilteredCommentPage />} />
 
         </Route>
