@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Comment
+from comment.models import Comment
 from django.http import JsonResponse
 from .ai_utils import check_offensive
 from django.views.decorators.http import require_GET
