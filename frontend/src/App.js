@@ -12,7 +12,8 @@ import ReviewSection from './ReviewSection';
 import FaqSection from './FaqSection';
 import LoginPage from './LoginPage.jsx';
 import SignupPage from './SignupPage.jsx';
-import Mypage from './Mypage';  // ✅ 네 로컬 코드
+import Mypage from './Mypage.jsx';  // ✅ 네 로컬 코드
+import FilteredCommentPage from './FilteredCommentPage';
 
 import './App.css';             // ✅ 원격 코드
 import axios from 'axios';     // ✅ 원격 코드
@@ -48,6 +49,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/" element={<BaseLayout />}>
+      
           <Route
             index
             element={
@@ -65,6 +67,8 @@ function App() {
           <Route path="keywords/add" element={<AddKeywordPage />} />
           <Route path="feedbacks" element={<FeedbackPage />} />
           <Route path="/mypage" element={<Mypage />} /> {/* ✅ 네 추가 코드 */}
+          <Route path="/filtered-comments" element={<FilteredCommentPage />} />
+
         </Route>
       </Routes>
     </Router>
