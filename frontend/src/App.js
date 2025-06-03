@@ -15,31 +15,28 @@ import SignupPage from './SignupPage.jsx';
 import Mypage from './Mypage.jsx';  // ✅ 네 로컬 코드
 import FilteredCommentPage from './FilteredCommentPage';
 
-import './App.css';             // ✅ 원격 코드
-import axios from 'axios';     // ✅ 원격 코드
+// ✅ 댓글 관련 컴포넌트 추가
+import CommentEditPage from './CommentEditPage';
+import CommentOffensivePage from './CommentOffensivePage';
 
-// ✅ AOS import
+import './App.css';
+import axios from 'axios';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-// axios 기본 설정
+// axios 설정
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 function App() {
-  // ✅ CSRF 토큰 자동 요청
   useEffect(() => {
     axios.get('/csrf/').catch(() => {});
   }, []);
 
-  // ✅ AOS 애니메이션 초기화
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: false,
-    });
+    AOS.init({ duration: 1000, once: false });
     AOS.refresh();
   }, []);
 
@@ -48,6 +45,11 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+
+        {/* ✅ 댓글 페이지 외부에서 독립적으로 연결 */}
+        <Route path="/comments/edit" element={<CommentEditPage />} />
+        <Route path="/comments/offensive" element={<CommentOffensivePage />} />
+
         <Route path="/" element={<BaseLayout />}>
       
           <Route
@@ -66,6 +68,7 @@ function App() {
           <Route path="keywords" element={<KeywordPage />} />
           <Route path="keywords/add" element={<AddKeywordPage />} />
           <Route path="feedbacks" element={<FeedbackPage />} />
+          <Route path="/mypage" element={<Mypage />} />
           <Route path="/mypage" element={<Mypage />} /> {/* ✅ 네 추가 코드 */}
           <Route path="/filtered-comments" element={<FilteredCommentPage />} />
 
