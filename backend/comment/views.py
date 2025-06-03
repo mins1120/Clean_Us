@@ -1,28 +1,37 @@
-from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
+from django.shortcuts import render
 from .models import Comment
+from django.http import JsonResponse
+from .ai_utils import check_offensive
+from django.views.decorators.http import require_GET
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .serializers import FilteredCommentSerializer
 
-# 공통 직렬화 함수
-def serialize_comment(comment):
-    return {
-        'id': comment.id,
-        'author': comment.author.username if comment.author else None,
-        'content': comment.content,
-        'is_offensive': comment.is_offensive,
-        'offensive_keyword': comment.offensive_reason,
-        'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M'),
-    }
-
-# 댓글 목록 조회만 (생성 없음)
-@require_http_methods(["GET"])
+# 🔹 전체 댓글 조회 (Serializer 사용)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def comment_list_view(request):
-    comments = Comment.objects.all().order_by('-created_at')
-    data = [serialize_comment(c) for c in comments]
-    return JsonResponse({'comments': data}, status=200)
+    comments = Comment.objects.filter(user_id=request.user).order_by('-created_at')
+    serializer = FilteredCommentSerializer(comments, many=True)
+    return Response({'comments': serializer.data}, status=200)
 
-# 악성 댓글 목록 조회
-@require_http_methods(["GET"])
-def offensive_comment_list_view(request):
-    comments = Comment.objects.filter(is_offensive=True).order_by('-created_at')
-    data = [serialize_comment(c) for c in comments]
-    return JsonResponse({'offensive_comments': data}, status=200)
+# 🔹 악성 댓글만 조회 (Serializer 사용)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def offensive_comment_page(request):
+    comments = Comment.objects.filter(is_offensive=True, user_id=request.user).order_by('-created_at')
+    serializer = FilteredCommentSerializer(comments, many=True)
+    return Response({'offensive_comments': serializer.data}, status=200)
+
+# 🔹 최근 정상 댓글 조회 (Serializer 사용, 최근 20개)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_recent_filtered_comments(request):
+    comments = Comment.objects.filter(
+        is_offensive=False,
+        user_id=request.user
+    ).order_by('-created_at')[:20]
+    
+    serializer = FilteredCommentSerializer(comments, many=True)
+    return Response(serializer.data)
