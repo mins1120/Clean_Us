@@ -42,6 +42,7 @@ function Sidebar({ onClose }) {
         <ul className="sidebar-list">
           <li><Link to="/filtered-comments">필터링 댓글</Link></li>
           <li><Link to="/comments/edit">댓글 조회/수정</Link></li>
+          <li><Link to="/comments/offensive">악성 댓글 목록</Link></li>
         </ul>
       </div>
 
