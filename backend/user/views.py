@@ -20,23 +20,6 @@ from rest_framework.response import Response
 from django.urls import reverse
 
 
-@csrf_exempt 
-@login_required
-def mypage_view(request):
-    if request.method == 'POST':
-        form = UserUpdateForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'message': '회원 정보가 성공적으로 수정되었습니다.'}, status=200)
-        else:
-            return JsonResponse({'errors': form.errors}, status=400)
-    else:
-        user = request.user
-        return JsonResponse({
-            'username': user.username,
-            'email': user.email,
-            'name': user.name,
-        }, status=200)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -44,11 +27,12 @@ def change_password_api(request):
     form = PasswordChangeForm(user=request.user, data=request.data)
     if form.is_valid():
         user = form.save()
-        update_session_auth_hash(request, user)
+        update_session_auth_hash(request, user) # 비밀번호 바꿔도 세션 유지
         return Response({'message': '비밀번호가 성공적으로 변경되었습니다.'}, status=200)
     else:
         return Response({'errors': form.errors}, status=400)
 
+# 🔹 [PUT] 사용자 이름 수정 처리
 @csrf_exempt
 @login_required
 def api_mypage_update(request):
@@ -63,7 +47,7 @@ def api_mypage_update(request):
             return JsonResponse({'error': '정보 수정 실패'}, status=500)
     return JsonResponse({'error': 'PUT 요청만 허용됩니다.'}, status=405)
 
-MAX_LOGIN_ATTEMPTS = 5
+MAX_LOGIN_ATTEMPTS = 5 # 최대 로그인 실패 횟수
 
 @csrf_exempt
 def api_signup_view(request):
@@ -102,33 +86,43 @@ def api_signup_view(request):
 
 @csrf_exempt
 def api_login_view(request):
+    # [POST] 로그인 요청 처리
     if request.method == 'POST':
         try:
+            # JSON 데이터 파싱
             data = json.loads(request.body)
             email = data.get('email')
             password = data.get('password')
 
+            # 이메일로 사용자 조회 
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
                 return JsonResponse({'message': '존재하지 않는 이메일입니다.'}, status=400)
-
+             
+             # 계정이 잠겨있는 경우
             if user.is_locked:
                 return JsonResponse({'message': '계정이 잠겼습니다. 관리자에게 문의하세요.'}, status=403)
 
+            # 이메일 인증이 안 된 경우
             if not user.is_active:
                 return JsonResponse({'message': '이메일 인증이 완료되지 않았습니다.'}, status=403)
 
+             # username 기반으로 인증 시도
             user_auth = authenticate(request, username=user.username, password=password)
 
             if user_auth is not None:
+                 # 로그인 성공: 세션에 사용자 등록 + 실패 횟수 초기화
                 login(request, user_auth)
                 user.failed_attempts = 0
                 user.save()
+                #return redirect('user:mypage')  # ← 마이페이지로 리디렉션
                 return JsonResponse({'message': '로그인 성공'}, status=200)
             else:
+                 # 로그인 실패: 실패 횟수 증가
                 user.failed_attempts += 1
                 if user.failed_attempts >= MAX_LOGIN_ATTEMPTS:
+                    # 최대 실패 횟수 초과 → 계정 잠금
                     user.lock_account()
                     return JsonResponse({'message': '계정이 잠겼습니다.'}, status=403)
                 else:
@@ -136,9 +130,11 @@ def api_login_view(request):
                     return JsonResponse({'message': f'비밀번호가 틀렸습니다. ({user.failed_attempts}회 실패)'}, status=401)
 
         except Exception as e:
+             # 서버 내부 오류 처리
             print('로그인 중 오류:', e)
             return JsonResponse({'message': '서버 오류'}, status=500)
 
+         # POST가 아닌 경우 허용 안 함
     return JsonResponse({'message': 'POST 요청만 허용됩니다.'}, status=405)
 
 @csrf_exempt
@@ -147,7 +143,9 @@ def api_logout_view(request):
         logout(request)
         request.session.modified = False
 
+        # 응답 생성 & 쿠키 삭제
         response = JsonResponse({'message': '로그아웃 성공'})
+        # 호스트 전용 쿠키 삭제
         response.delete_cookie(settings.SESSION_COOKIE_NAME, path='/')
         response.delete_cookie(settings.SESSION_COOKIE_NAME, path='/', domain='localhost')
         response.delete_cookie(settings.CSRF_COOKIE_NAME,   path='/', domain='localhost')
@@ -187,8 +185,8 @@ def csrf_token_view(request):
 @login_required
 def delete_account_view(request):
     user = request.user
-    logout(request)
-    user.delete()
+    logout(request)  # 로그아웃 먼저
+    user.delete()    # 유저 삭제
     return JsonResponse({'message': '회원 탈퇴가 완료되었습니다.'}, status=200)
 
 def send_verification_email(user, request):
