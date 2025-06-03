@@ -12,7 +12,8 @@ import ReviewSection from './ReviewSection';
 import FaqSection from './FaqSection';
 import LoginPage from './LoginPage.jsx';
 import SignupPage from './SignupPage.jsx';
-import Mypage from './Mypage';
+import Mypage from './Mypage.jsx';  // ✅ 네 로컬 코드
+import FilteredCommentPage from './FilteredCommentPage';
 
 // ✅ 댓글 관련 컴포넌트 추가
 import CommentEditPage from './CommentEditPage';
@@ -34,6 +35,7 @@ function App() {
     axios.get('/csrf/').catch(() => {});
   }, []);
 
+
   useEffect(() => {
     AOS.init({ duration: 1000, once: false });
     AOS.refresh();
@@ -50,6 +52,7 @@ function App() {
         <Route path="/comments/offensive" element={<CommentOffensivePage />} />
 
         <Route path="/" element={<BaseLayout />}>
+      
           <Route
             index
             element={
@@ -67,6 +70,8 @@ function App() {
           <Route path="keywords/add" element={<AddKeywordPage />} />
           <Route path="feedbacks" element={<FeedbackPage />} />
           <Route path="/mypage" element={<Mypage />} />
+          <Route path="/filtered-comments" element={<FilteredCommentPage />} />
+
         </Route>
       </Routes>
     </Router>
