@@ -26,7 +26,6 @@ function Sidebar({ onClose }) {
           withCredentials: true
         });
 
-        // 쿠키 삭제 (추가적으로 안전하게)
         document.cookie = "sessionid=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         document.cookie = "csrftoken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 
@@ -73,22 +72,32 @@ function Sidebar({ onClose }) {
         </ul>
       </div>
 
-      <div className="sidebar-section">
-        <h3 className="section-title">실시간 댓글 분석</h3>
-        <ul className="sidebar-list">
-          <li><Link to="/filtered-comments">필터링 댓글</Link></li>
-          <li><Link to="/comments/edit">댓글 조회/수정</Link></li>
-          <li><Link to="/comments/offensive">악성 댓글 목록</Link></li>
-        </ul>
-      </div>
+      {isLoggedIn ? (
+        <>
+          <div className="sidebar-section">
+            <h3 className="section-title">실시간 댓글 분석</h3>
+            <ul className="sidebar-list">
+              <li><Link to="/filtered-comments">필터링 댓글</Link></li>
+              <li><Link to="/comments/edit">댓글 조회/수정</Link></li>
+              <li><Link to="/comments/offensive">악성 댓글 목록</Link></li>
+            </ul>
+          </div>
 
-      <div className="sidebar-section">
-        <h3 className="section-title">관리 페이지</h3>
-        <ul className="sidebar-list">
-          <li><Link to="/feedbacks">사용자 피드백</Link></li>
-          <li><Link to="/keywords">키워드 설정</Link></li>
-        </ul>
-      </div>
+          <div className="sidebar-section">
+            <h3 className="section-title">관리 페이지</h3>
+            <ul className="sidebar-list">
+              <li><Link to="/feedbacks">사용자 피드백</Link></li>
+              <li><Link to="/keywords">키워드 설정</Link></li>
+            </ul>
+          </div>
+        </>
+      ) : (
+        <div className="sidebar-section">
+          <p style={{ fontSize: '0.95rem', color: '#888', marginTop: '20px' }}>
+            🔒 로그인 후 이용 가능한 메뉴입니다.
+          </p>
+        </div>
+      )}
     </nav>
   );
 }

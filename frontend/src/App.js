@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BaseLayout from './BaseLayout';
@@ -13,7 +12,8 @@ import ReviewSection from './ReviewSection';
 import FaqSection from './FaqSection';
 import LoginPage from './LoginPage.jsx';
 import SignupPage from './SignupPage.jsx';
-import Mypage from './Mypage';
+import Mypage from './Mypage.jsx';
+import FilteredCommentPage from './FilteredCommentPage';
 import CommentEditPage from './CommentEditPage';
 import CommentOffensivePage from './CommentOffensivePage';
 
@@ -22,7 +22,6 @@ import axios from 'axios';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-// Axios 기본 설정
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -41,11 +40,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* 로그인/회원가입은 BaseLayout 없이 */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* BaseLayout이 적용되는 내부 페이지들 */}
         <Route path="/" element={<BaseLayout />}>
           <Route
             index
@@ -66,6 +63,7 @@ function App() {
           <Route path="mypage" element={<Mypage />} />
           <Route path="comments/edit" element={<CommentEditPage />} />
           <Route path="comments/offensive" element={<CommentOffensivePage />} />
+          <Route path="filtered-comments" element={<FilteredCommentPage />} />
         </Route>
       </Routes>
     </Router>
