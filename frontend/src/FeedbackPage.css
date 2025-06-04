@@ -1,0 +1,98 @@
+/* src/FeedbackPage.css */
+.feedback-container {
+  max-width: 800px;
+  margin: 80px auto;
+  padding: 20px;
+  font-family: 'Noto Serif KR', serif;
+  color: #333;
+}
+
+.feedback-container h2 {
+  font-size: 26px;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #222;
+}
+
+.feedback-item {
+  border: 1px solid #ddd;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background-color: #fefefe;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.feedback-item p {
+  margin: 6px 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.feedback-item strong {
+  color: #555;
+}
+
+.feedback-item button {
+  margin-top: 10px;
+  background-color: #8ca17e;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.feedback-item button:hover {
+  background-color: #798d6f;
+}
+
+.back-button {
+  display: block;
+  margin: 30px auto 0;
+  background-color: #ccc;
+  color: #222;
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #bbb;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ✅ 반응형 */
+@media (max-width: 600px) {
+  .feedback-container {
+    padding: 16px;
+    margin: 40px 12px;
+  }
+
+  .feedback-item {
+    padding: 14px;
+  }
+
+  .feedback-container h2 {
+    font-size: 22px;
+  }
+
+  .feedback-item p {
+    font-size: 14px;
+  }
+
+  .feedback-item button,
+  .back-button {
+    width: 100%;
+  }
+}

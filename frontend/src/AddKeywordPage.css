@@ -1,0 +1,99 @@
+/* src/AddKeywordPage.css */
+.add-keyword-container {
+  max-width: 480px;
+  margin: 80px auto;
+  padding: 20px;
+  font-family: 'Noto Serif KR', serif;
+  color: #333;
+}
+
+.add-keyword-container h2 {
+  font-size: 26px;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #222;
+}
+
+.add-keyword-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.add-keyword-form label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+}
+
+.add-keyword-form input,
+.add-keyword-form select {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.add-keyword-form input:focus,
+.add-keyword-form select:focus {
+  border-color: #8ca17e;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.add-keyword-form button {
+  padding: 10px 20px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-keyword-form button[type="submit"] {
+  background-color: #8ca17e;
+  color: white;
+}
+
+.add-keyword-form button[type="submit"]:hover {
+  background-color: #798d6f;
+}
+
+.add-keyword-form button[type="button"] {
+  background-color: #ccc;
+  color: #222;
+}
+
+.add-keyword-form button[type="button"]:hover {
+  background-color: #bbb;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* ✅ 반응형 */
+@media (max-width: 480px) {
+  .add-keyword-container {
+    margin: 60px 16px;
+  }
+
+  .add-keyword-form button {
+    width: 100%;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+}

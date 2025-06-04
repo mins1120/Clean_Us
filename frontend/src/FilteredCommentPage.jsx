@@ -1,6 +1,6 @@
-// frontend/src/FilteredCommentPage.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './FilteredCommentPage.css';  // ✅ CSS 파일 임포트
 
 function FilteredCommentPage() {
   const [comments, setComments] = useState([]);
@@ -25,7 +25,7 @@ function FilteredCommentPage() {
   }
 
   return (
-    <div>
+    <div className="filtered-comment-container">
       <h2>실시간 필터링된 댓글</h2>
       <ul>
         {comments.map(comment => (

@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './AddKeywordPage.css';
+import { getCookie } from './utils/csrf';
 
 function AddKeywordPage() {
   const [keyword, setKeyword] = useState('');
@@ -12,11 +14,13 @@ function AddKeywordPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/preference/keywords/add/', {
+      const csrfToken = getCookie('csrftoken');
+      await axios.post('http://localhost:8000/preference/keywords/add/', {
         keyword,
         sensitive: parseInt(sensitive, 10),
+        withCredentials: true,   
+        headers: { 'X-CSRFToken': csrfToken }  
       });
-      // 성공 후 목록 페이지로 되돌아가기
       navigate('/keywords');
     } catch (err) {
       console.error(err);
@@ -25,34 +29,37 @@ function AddKeywordPage() {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="add-keyword-container">
       <h2>키워드 추가</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
+      {error && <p className="error-message">{error}</p>}
+      <form className="add-keyword-form" onSubmit={handleSubmit}>
         <div>
-          <label>키워드:&nbsp;
-            <input
-              type="text"
-              value={keyword}
-              onChange={e => setKeyword(e.target.value)}
-              required
-            />
-          </label>
+          <label htmlFor="keyword">키워드</label>
+          <input
+            id="keyword"
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            required
+          />
         </div>
-        <div style={{ marginTop: 10 }}>
-          <label>민감도:&nbsp;
-            <select value={sensitive} onChange={e => setSensitive(e.target.value)}>
-              <option value={1}>약한 필터링</option>
-              <option value={2}>기본 필터링</option>
-              <option value={3}>강한 필터링</option>
-            </select>
-          </label>
+
+        <div>
+          <label htmlFor="sensitive">민감도</label>
+          <select
+            id="sensitive"
+            value={sensitive}
+            onChange={(e) => setSensitive(e.target.value)}
+          >
+            <option value={1}>약한 필터링</option>
+            <option value={2}>기본 필터링</option>
+            <option value={3}>강한 필터링</option>
+          </select>
         </div>
-        <div style={{ marginTop: 20 }}>
+
+        <div className="button-group">
           <button type="submit">추가하기</button>
-          <button type="button" onClick={() => navigate(-1)} style={{ marginLeft: 10 }}>
-            취소
-          </button>
+          <button type="button" onClick={() => navigate(-1)}>취소</button>
         </div>
       </form>
     </div>
