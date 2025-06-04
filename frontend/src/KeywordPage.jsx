@@ -29,7 +29,12 @@ function KeywordPage() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete('http://localhost:8000/preference/keywords/', { data: { id } });
+      const csrfToken = getCookie('csrftoken');
+      await axios.delete('http://localhost:8000/preference/keywords/', {
+        data: { id },
+        withCredentials: true,                 
+        headers: { 'X-CSRFToken': csrfToken }
+      });
       setKeywords(prev => prev.filter(k => k.id !== id));
     } catch (err) {
       console.error('삭제 실패:', err);
