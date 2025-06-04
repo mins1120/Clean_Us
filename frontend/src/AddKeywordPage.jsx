@@ -17,9 +17,11 @@ function AddKeywordPage() {
       const csrfToken = getCookie('csrftoken');
       await axios.post('http://localhost:8000/preference/keywords/add/', {
         keyword,
-        sensitive: parseInt(sensitive, 10),
-        withCredentials: true,   
-        headers: { 'X-CSRFToken': csrfToken }  
+        sensitive: parseInt(sensitive, 10)
+      },
+      {
+        withCredentials: true,
+        headers: { 'X-CSRFToken': csrfToken }
       });
       navigate('/keywords');
     } catch (err) {

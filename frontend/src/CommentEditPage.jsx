@@ -11,7 +11,7 @@ function CommentEditPage() {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/api/comments/`, { withCredentials: true })
+      .get(`${BASE_URL}/comment/list/`, { withCredentials: true })
       .then(response => {
         setComments(response.data.comments);
       })
@@ -38,7 +38,7 @@ function CommentEditPage() {
               <span className="edit-comment-content"> {comment.content}</span>
               {comment.is_offensive && (
                 <span className="edit-comment-offensive">
-                  {' '}(악성: {comment.offensive_keyword})
+                  {' '}(악성: {comment.offensive_reason})
                 </span>
               )}
               <div className="edit-comment-date">{comment.created_at}</div>

@@ -9,7 +9,7 @@ function CommentOffensivePage() {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/api/comments/offensive/`, { withCredentials: true })
+      .get(`${BASE_URL}/comment/offensive-page/`, { withCredentials: true })
       .then(response => {
         setOffensiveComments(response.data.offensive_comments);
       })
@@ -34,7 +34,7 @@ function CommentOffensivePage() {
             <li key={comment.id} className="comment-item">
               <strong className="comment-author">{comment.author || '익명'}:</strong>
               <span className="comment-content">{comment.content}</span>
-              <span className="comment-offensive"> (악성: {comment.offensive_keyword})</span>
+              <span className="comment-offensive"> (악성: {comment.offensive_reason})</span>
               <div className="comment-date">{comment.created_at}</div>
             </li>
           ))}

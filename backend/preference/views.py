@@ -97,10 +97,10 @@ def user_feedback_list_or_delete(request):
         comment = fb.comment
         if fb.result == 1:
             # ‘악성 댓글 차단 요청’ 철회 → 댓글 정상화
-            comment.is_filtered = False
+            comment.is_offensive = False
         elif fb.result == 2:
             # ‘차단 복원 요청’ 철회 → 댓글 다시 차단
-            comment.is_filtered = True
+            comment.is_offensive = True
         comment.save()
 
         # 3b) 피드백 레코드 삭제
