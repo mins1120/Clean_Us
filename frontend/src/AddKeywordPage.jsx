@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './AddKeywordPage.css';
+import { getCookie } from './utils/csrf';
 
 function AddKeywordPage() {
   const [keyword, setKeyword] = useState('');
@@ -13,9 +14,12 @@ function AddKeywordPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/preference/keywords/add/', {
+      const csrfToken = getCookie('csrftoken');
+      await axios.post('http://localhost:8000/preference/keywords/add/', {
         keyword,
         sensitive: parseInt(sensitive, 10),
+        withCredentials: true,   
+        headers: { 'X-CSRFToken': csrfToken }  
       });
       navigate('/keywords');
     } catch (err) {

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './FeedbackPage.css';
+import { getCookie } from './utils/csrf';
 
 function FeedbackPage() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -15,7 +16,7 @@ function FeedbackPage() {
 
   const fetchFeedbacks = async () => {
     try {
-      const res = await axios.get('/preference/feedbacks/');
+      const res = await axios.get('http://localhost:8000/preference/feedbacks/');
       setFeedbacks(res.data);
     } catch (err) {
       console.error('피드백 불러오기 실패:', err);
@@ -25,7 +26,11 @@ function FeedbackPage() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete('/preference/feedbacks/', { data: { id } });
+      const csrfToken = getCookie('csrftoken');  // ✅ 이거 사용!
+      await axios.delete('http://localhost:8000/preference/feedbacks/',
+       {withCredentials: true,
+        data: { id },
+        headers: { 'X-CSRFToken': csrfToken }});
       setFeedbacks((prev) => prev.filter((f) => f.id !== id));
     } catch (err) {
       console.error('피드백 삭제 실패:', err);

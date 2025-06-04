@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './KeywordPage.css';
+import { getCookie } from './utils/csrf';
 
 function KeywordPage() {
   const [keywords, setKeywords] = useState([]);
@@ -15,7 +16,11 @@ function KeywordPage() {
 
   const fetchKeywords = async () => {
     try {
-      const res = await axios.get('/preference/keywords/');
+      const csrfToken = getCookie('csrftoken');
+      const res = await axios.get('http://localhost:8000/preference/keywords/', {
+        withCredentials: true,                 
+        headers: { 'X-CSRFToken': csrfToken }  
+      });
       setKeywords(res.data);
     } catch (err) {
       console.error('키워드 불러오기 실패:', err);
@@ -24,7 +29,7 @@ function KeywordPage() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete('/preference/keywords/', { data: { id } });
+      await axios.delete('http://localhost:8000/preference/keywords/', { data: { id } });
       setKeywords(prev => prev.filter(k => k.id !== id));
     } catch (err) {
       console.error('삭제 실패:', err);

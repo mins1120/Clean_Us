@@ -13,40 +13,39 @@ import ReviewSection from './ReviewSection';
 import FaqSection from './FaqSection';
 import LoginPage from './LoginPage.jsx';
 import SignupPage from './SignupPage.jsx';
-import Mypage from './Mypage';  // ✅ 네 로컬 코드
+import Mypage from './Mypage';
+import CommentEditPage from './CommentEditPage';
+import CommentOffensivePage from './CommentOffensivePage';
 
-import './App.css';             // ✅ 원격 코드
-import axios from 'axios';     // ✅ 원격 코드
-
-// ✅ AOS import
+import './App.css';
+import axios from 'axios';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-// axios 기본 설정
+// Axios 기본 설정
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 function App() {
-  // ✅ CSRF 토큰 자동 요청
   useEffect(() => {
     axios.get('/csrf/').catch(() => {});
   }, []);
 
-  // ✅ AOS 애니메이션 초기화
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: false,
-    });
+    AOS.init({ duration: 1000, once: false });
     AOS.refresh();
   }, []);
 
   return (
     <Router>
       <Routes>
-        {/* ✅ BaseLayout 내부에 모든 페이지를 포함 */}
+        {/* 로그인/회원가입은 BaseLayout 없이 */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+
+        {/* BaseLayout이 적용되는 내부 페이지들 */}
         <Route path="/" element={<BaseLayout />}>
           <Route
             index
@@ -61,12 +60,12 @@ function App() {
               </>
             }
           />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="signup" element={<SignupPage />} />
           <Route path="keywords" element={<KeywordPage />} />
           <Route path="keywords/add" element={<AddKeywordPage />} />
           <Route path="feedbacks" element={<FeedbackPage />} />
-          <Route path="/mypage" element={<Mypage />} /> {/* ✅ 네 추가 코드 */}
+          <Route path="mypage" element={<Mypage />} />
+          <Route path="comments/edit" element={<CommentEditPage />} />
+          <Route path="comments/offensive" element={<CommentOffensivePage />} />
         </Route>
       </Routes>
     </Router>
