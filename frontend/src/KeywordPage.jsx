@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import './KeywordPage.css';
+import { getCookie } from './utils/csrf';
 
 function KeywordPage() {
   const [keywords, setKeywords] = useState([]);
@@ -14,7 +16,11 @@ function KeywordPage() {
 
   const fetchKeywords = async () => {
     try {
-      const res = await axios.get('/preference/keywords/');
+      const csrfToken = getCookie('csrftoken');
+      const res = await axios.get('http://localhost:8000/preference/keywords/', {
+        withCredentials: true,                 
+        headers: { 'X-CSRFToken': csrfToken }  
+      });
       setKeywords(res.data);
     } catch (err) {
       console.error('키워드 불러오기 실패:', err);
@@ -23,7 +29,12 @@ function KeywordPage() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete('/preference/keywords/', { data: { id } });
+      const csrfToken = getCookie('csrftoken');
+      await axios.delete('http://localhost:8000/preference/keywords/', {
+        data: { id },
+        withCredentials: true,                 
+        headers: { 'X-CSRFToken': csrfToken }
+      });
       setKeywords(prev => prev.filter(k => k.id !== id));
     } catch (err) {
       console.error('삭제 실패:', err);
@@ -31,22 +42,21 @@ function KeywordPage() {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="keyword-container">
       <h2>내 키워드 필터링 목록</h2>
-      <ul>
+      <ul className="keyword-list">
         {keywords.map(k => (
-          <li key={k.id}>
-            <strong>{k.keyword}</strong> (민감도: {k.sensitive})
-            <button onClick={() => handleDelete(k.id)} style={{ marginLeft: 10 }}>
-              삭제
-            </button>
+          <li key={k.id} className="keyword-item">
+            <span className="keyword-item-text">
+              <strong>{k.keyword}</strong> (민감도: {k.sensitive})
+            </span>
+            <button onClick={() => handleDelete(k.id)}>삭제</button>
           </li>
         ))}
       </ul>
 
-      {/* 새 페이지로 이동 */}
       <Link to="/keywords/add">
-        <button style={{ marginTop: 20 }}>키워드 추가</button>
+        <button className="add-button">키워드 추가</button>
       </Link>
     </div>
   );

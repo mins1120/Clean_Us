@@ -1,0 +1,101 @@
+/* src/SignupPage.css */
+.signup-container {
+  max-width: 360px;
+  margin: 100px auto;
+  padding: 0 20px;
+  font-family: 'Noto Serif KR', serif;
+}
+
+.signup-container h2 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 40px;
+  color: #222;
+}
+
+.signup-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.signup-container label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.signup-container input {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.signup-container input:focus {
+  border-color: #8ca17e;
+}
+
+.signup-container input::placeholder {
+  color: #bbb;
+}
+
+.signup-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #8ca17e;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+.signup-container button:hover {
+  background-color: #798d6f;
+}
+
+.signup-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.signup-footer a {
+  color: #666;
+  text-decoration: none;
+}
+
+.signup-footer a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  margin-top: 14px;
+  text-align: center;
+  color: red;
+  font-size: 13px;
+}
+
+/* ✅ 반응형 */
+@media (max-width: 480px) {
+  .signup-container {
+    margin: 60px 16px;
+  }
+
+  .signup-container h2 {
+    font-size: 24px;
+  }
+
+  .signup-footer {
+    font-size: 12px;
+  }
+}

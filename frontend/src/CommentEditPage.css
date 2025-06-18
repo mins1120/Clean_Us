@@ -1,0 +1,64 @@
+/* CommentEditPage.css */
+
+.edit-comment-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.edit-comment-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #222;
+  border-left: 4px solid #007bff;
+  padding-left: 12px;
+}
+
+.edit-comment-loading,
+.edit-comment-empty {
+  text-align: center;
+  font-size: 1rem;
+  color: #888;
+  margin-top: 2rem;
+}
+
+.edit-comment-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.edit-comment-item {
+  border-bottom: 1px solid #eee;
+  padding: 1rem 0;
+}
+
+.edit-comment-item:last-child {
+  border-bottom: none;
+}
+
+.edit-comment-author {
+  font-weight: 600;
+  color: #333;
+}
+
+.edit-comment-content {
+  color: #444;
+  font-size: 1rem;
+}
+
+.edit-comment-offensive {
+  color: #d9534f;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.edit-comment-date {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin-top: 0.3rem;
+}

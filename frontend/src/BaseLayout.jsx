@@ -1,15 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
+import axios from 'axios';
 import Sidebar from './Sidebar';
 import './BaseLayout.css';
 
 function BaseLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === '/';
 
+  useEffect(() => {
+    axios.get('http://localhost:8000/user/api/mypage/detail/', {
+      withCredentials: true,
+    })
+    .then(() => setIsLoggedIn(true))
+    .catch(() => setIsLoggedIn(false));
+  }, []);
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+
+  const handleLogout = async () => {
+    const confirmed = window.confirm('정말 로그아웃하시겠습니까?');
+    if (confirmed) {
+      try {
+        await axios.post('http://localhost:8000/user/api/logout/', {}, {
+          withCredentials: true,
+        });
+        window.location.href = '/'; // 로그아웃 후 리로드
+      } catch (err) {
+        console.error('로그아웃 실패:', err);
+      }
+    }
   };
 
   return (
@@ -21,8 +45,29 @@ function BaseLayout() {
 
         <div className="header-right">
           <div className="auth-buttons">
-            <a href="/login">로그인</a>
-            <a href="/signup">회원가입</a>
+            {isLoggedIn ? (
+              <>
+                <Link to="/mypage">마이페이지</Link>
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#000',
+                    padding: 0,
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                  }}
+                >
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">로그인</Link>
+                <Link to="/signup">회원가입</Link>
+              </>
+            )}
           </div>
 
           {!sidebarOpen && (

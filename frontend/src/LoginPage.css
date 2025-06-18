@@ -1,0 +1,106 @@
+/* src/LoginPage.css */
+.login-container {
+  max-width: 360px;
+  margin: 100px auto;
+  padding: 0 20px;
+  font-family: 'Noto Serif KR', serif;
+}
+
+.login-container h2 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 40px;
+  color: #222;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px; /* ⬅️ 여백 조절 */
+}
+
+.login-container label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.login-container input:focus {
+  border-color: #8ca17e;
+}
+
+.login-container input::placeholder {
+  color: #bbb;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #8ca17e;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+.login-container button:hover {
+  background-color: #798d6f;
+}
+
+.login-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #666;
+}
+
+.login-footer a {
+  color: #666;
+  text-decoration: none;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  margin-top: 14px;
+  text-align: center;
+  color: red;
+  font-size: 13px;
+}
+
+/* ✅ 반응형 */
+@media (max-width: 480px) {
+  .login-container {
+    margin: 60px 16px;
+  }
+
+  .login-container h2 {
+    font-size: 24px;
+  }
+
+  .login-footer {
+    font-size: 12px;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+}

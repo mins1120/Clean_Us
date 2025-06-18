@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './CommentOffensivePage.css';
 
 function CommentOffensivePage() {
   const [offensiveComments, setOffensiveComments] = useState([]);
@@ -7,7 +8,8 @@ function CommentOffensivePage() {
   const BASE_URL = 'http://localhost:8000';
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/comments/offensive/`, { withCredentials: true })
+    axios
+      .get(`${BASE_URL}/comment/offensive-page/`, { withCredentials: true })
       .then(response => {
         setOffensiveComments(response.data.offensive_comments);
       })
@@ -20,19 +22,20 @@ function CommentOffensivePage() {
   }, []);
 
   return (
-    <div>
+    <div className="comment-container">
       <h2>악성 댓글 목록</h2>
       {loading ? (
-        <p>불러오는 중...</p>
+        <p className="comment-loading">불러오는 중...</p>
       ) : offensiveComments.length === 0 ? (
-        <p>⚠️ 악성 댓글이 없습니다.</p>
+        <p className="comment-empty">⚠️ 악성 댓글이 없습니다.</p>
       ) : (
-        <ul>
+        <ul className="comment-list">
           {offensiveComments.map(comment => (
-            <li key={comment.id}>
-              <strong>{comment.author || '익명'}:</strong> {comment.content}
-              <span style={{ color: 'red' }}> (악성: {comment.offensive_keyword})</span>
-              <div style={{ fontSize: '0.8rem', color: '#888' }}>{comment.created_at}</div>
+            <li key={comment.id} className="comment-item">
+              <strong className="comment-author">{comment.author || '익명'}:</strong>
+              <span className="comment-content">{comment.content}</span>
+              <span className="comment-offensive"> (악성: {comment.offensive_reason})</span>
+              <div className="comment-date">{comment.created_at}</div>
             </li>
           ))}
         </ul>

@@ -1,0 +1,95 @@
+/* Mypage.css */
+
+.mypage-wrapper {
+  max-width: 640px;
+  margin: 60px auto;
+  padding: 40px 32px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.mypage-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  color: #222;
+}
+
+.mypage-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mypage-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.mypage-label {
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+}
+
+.mypage-input {
+  padding: 12px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.mypage-input:focus {
+  outline: none;
+  background-color: #fff;
+  border-color: #aaa;
+}
+
+.mypage-btn {
+  align-self: flex-end;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* 일반 제출 버튼 (수정하기, 비밀번호 변경 등) */
+.mypage-btn.submit {
+  background-color: #869e87;
+  color: #fff;
+}
+
+.mypage-btn.submit:hover {
+  background-color: #758a76;
+}
+
+/* 회원 탈퇴 버튼 */
+.mypage-btn.delete {
+  background-color: #e74c3c;
+  color: #fff;
+  margin-top: 20px;
+}
+
+.mypage-btn.delete:hover {
+  background-color: #c0392b;
+}
+
+.mypage-password-section {
+  margin-top: 32px;
+}
+
+.mypage-message {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #2ecc71;
+  font-weight: 500;
+}
