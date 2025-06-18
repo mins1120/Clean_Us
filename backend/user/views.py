@@ -19,6 +19,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.urls import reverse
 from comment.models import Comment
+from django.core.mail import EmailMultiAlternatives
 
 
 @api_view(['POST'])
@@ -238,7 +239,6 @@ def password_reset_request_view(request):
 
         user = User.objects.filter(email=email).first()
         if not user:
-            # 계정 유무와 관계없이 동일한 메시지 (보안)
             return JsonResponse({'message': 'If the email exists, a reset link has been sent.'}, status=200)
 
         uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -247,20 +247,29 @@ def password_reset_request_view(request):
         reset_url = f"http://localhost:3000/reset-password?uid={uid}&token={token}"
 
         subject = "CleanUs 비밀번호 재설정 링크"
-        message = (
+        from_email = settings.EMAIL_HOST_USER
+        to_email = [user.email]
+
+        # ✅ 텍스트 버전 (백업용)
+        text_message = (
             f"{user.username}님,\n\n"
             f"비밀번호를 재설정하려면 아래 링크를 클릭하세요:\n\n"
             f"{reset_url}\n\n"
             f"링크는 일정 시간 후 만료됩니다."
         )
 
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[user.email],
-            fail_silently=False,
-        )
+        # ✅ HTML 버전 (하이퍼링크 포함)
+        html_message = f"""
+        <p>{user.username}님,</p>
+        <p>비밀번호를 재설정하려면 아래 링크를 클릭하세요:</p>
+        <p><a href="{reset_url}">{reset_url}</a></p>
+        <p><small>해당 링크는 일정 시간 후 만료됩니다.</small></p>
+        """
+
+        # ✅ HTML 메일 전송
+        msg = EmailMultiAlternatives(subject, text_message, from_email, to_email)
+        msg.attach_alternative(html_message, "text/html")
+        msg.send()
 
         return JsonResponse({'message': 'If the email exists, a reset link has been sent.'}, status=200)
 
