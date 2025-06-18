@@ -19,6 +19,9 @@ def comment_list_view(request):
 # 🔹 악성 댓글만 조회 (Serializer 사용)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+    comments = Comment.objects.all().order_by('-created_at')
+    return render(request, 'comment/comment_list.html', {'comments': comments})
+
 def offensive_comment_page(request):
     comments = Comment.objects.filter(is_offensive=True, user_id=request.user).order_by('-created_at')
     serializer = FilteredCommentSerializer(comments, many=True)
