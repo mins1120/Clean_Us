@@ -12,4 +12,7 @@ urlpatterns = [
    path('api/password/', views.change_password_api, name='api_change_password'),
    path('csrf/', views.csrf_token_view, name='csrf_token'),
    path('delete/', views.delete_account_view, name='delete_account'),
+   # ✅ 비밀번호 재설정용 API 추가
+   path('api/password-reset-request/', views.password_reset_request_view, name='password_reset_request'),
+   path('api/password-reset-confirm/', views.password_reset_confirm_view, name='password_reset_confirm'),
 ]
