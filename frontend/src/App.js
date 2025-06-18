@@ -16,6 +16,8 @@ import Mypage from './Mypage.jsx';
 import FilteredCommentPage from './FilteredCommentPage';
 import CommentEditPage from './CommentEditPage';
 import CommentOffensivePage from './CommentOffensivePage';
+import FindPasswordPage from './FindPasswordPage'; // ✅ 비밀번호 찾기
+import ResetPasswordPage from './ResetPasswordPage'; // ✅ 비밀번호 재설정
 
 import './App.css';
 import axios from 'axios';
@@ -42,6 +44,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/find-password" element={<FindPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} /> 
 
         <Route path="/" element={<BaseLayout />}>
           <Route

@@ -21,7 +21,6 @@ from django.urls import reverse
 from comment.models import Comment
 
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_password_api(request):
@@ -224,7 +223,83 @@ def verify_email(request, uidb64, token):
 
     if user and default_token_generator.check_token(user, token):
         user.is_active = True
-        user.save()
+        user.save() 
         return HttpResponse("이메일 인증이 완료되었습니다. 로그인해주세요.")
     else:
         return HttpResponse("인증 링크가 유효하지 않거나 만료되었습니다.")
+    
+
+@csrf_exempt
+@require_POST
+def password_reset_request_view(request):
+    try:
+        data = json.loads(request.body)
+        email = data.get('email')
+
+        user = User.objects.filter(email=email).first()
+        if not user:
+            # 계정 유무와 관계없이 동일한 메시지 (보안)
+            return JsonResponse({'message': 'If the email exists, a reset link has been sent.'}, status=200)
+
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+
+        reset_url = f"http://localhost:3000/reset-password?uid={uid}&token={token}"
+
+        subject = "CleanUs 비밀번호 재설정 링크"
+        message = (
+            f"{user.username}님,\n\n"
+            f"비밀번호를 재설정하려면 아래 링크를 클릭하세요:\n\n"
+            f"{reset_url}\n\n"
+            f"링크는 일정 시간 후 만료됩니다."
+        )
+
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+
+        return JsonResponse({'message': 'If the email exists, a reset link has been sent.'}, status=200)
+
+    except Exception as e:
+        print("비밀번호 재설정 요청 오류:", e)
+        return JsonResponse({'message': '비밀번호 재설정 중 오류 발생'}, status=500)
+
+
+@csrf_exempt  # CSRF 토큰 없이도 외부 POST 허용 (React에서 요청 받을 수 있게)
+@require_POST  # POST 요청만 허용
+def password_reset_confirm_view(request):
+    try:
+        # 클라이언트에서 전달된 JSON 데이터를 파싱
+        data = json.loads(request.body)
+        uidb64 = data.get('uid')              # URL-safe base64로 인코딩된 유저 ID
+        token = data.get('token')             # 이메일로 전송된 인증 토큰
+        new_password = data.get('new_password')  # 새로 설정할 비밀번호
+
+        # UID 디코딩 → 실제 유저 ID 얻기
+        uid = urlsafe_base64_decode(uidb64).decode()
+
+        # 해당 유저 조회
+        user = User.objects.get(pk=uid)
+
+        # 토큰 유효성 확인 (시간 만료 또는 위조된 경우 실패)
+        if not default_token_generator.check_token(user, token):
+            return JsonResponse({'message': '토큰이 유효하지 않거나 만료되었습니다.'}, status=400)
+
+        # 유효한 경우 → 새 비밀번호 저장
+        user.set_password(new_password)
+        user.save()
+
+        return JsonResponse({'message': '비밀번호가 성공적으로 변경되었습니다.'}, status=200)
+
+    except Exception as e:
+        # 예외 발생 시 로그 출력하고 에러 응답 반환
+        print("비밀번호 재설정 확인 오류:", e)
+        return JsonResponse({'message': '비밀번호 변경 중 오류 발생'}, status=500)
+
+    
+
+    
