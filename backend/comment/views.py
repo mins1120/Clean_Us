@@ -7,6 +7,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import FilteredCommentSerializer
+from rest_framework import status
+from .models import Comment
 
 # 🔹 전체 댓글 조회 (Serializer 사용)
 @api_view(['GET'])
@@ -35,3 +37,15 @@ def get_recent_filtered_comments(request):
     
     serializer = FilteredCommentSerializer(comments, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def set_user_offensive_reason(request, comment_id):
+    try:
+        comment = Comment.objects.get(id=comment_id, user_id=request.user)
+        reason = request.data.get('user_offensive_reason', '')
+        comment.user_offensive_reason = reason
+        comment.save()
+        return Response({'message': '사용자 의견이 저장되었습니다.'}, status=200)
+    except Comment.DoesNotExist:
+        return Response({'error': '댓글을 찾을 수 없습니다.'}, status=404)
