@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from comment.models import Comment
+from .models import Comment
 from django.http import JsonResponse
 from .ai_utils import check_offensive
 from django.views.decorators.http import require_GET
@@ -24,7 +24,7 @@ def offensive_comment_page(request):
     serializer = FilteredCommentSerializer(comments, many=True)
     return Response({'offensive_comments': serializer.data}, status=200)
 
-# 🔹 최근 정상 댓글 조회 (Serializer 사용, 최근 20개)
+# 🔹 최근 정상 댓글 조회 (최근 20개)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_recent_filtered_comments(request):

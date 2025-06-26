@@ -37,6 +37,7 @@ class UserFeedback(models.Model):
     user         = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     result       = models.PositiveSmallIntegerField(choices=FEEDBACK_CHOICES)
     submitted_at = models.DateTimeField(auto_now_add=True)
+    reason = models.TextField(blank=True, null=True) #사용자가 어떤 이유로 댓글피드백을 하는지지
 
     class Meta:
         unique_together = ('comment', 'user')

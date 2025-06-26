@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from .models import KeywordPreference, UserFeedback
 from .serializers import KeywordPreferenceSerializer, UserFeedbackSerializer
+from comment.models import Comment
 
 User = get_user_model()
 ### 로그인 이후 해야할 것들
@@ -110,5 +111,50 @@ def user_feedback_list_or_delete(request):
     except UserFeedback.DoesNotExist:
         return Response({'error': 'Feedback not found'}, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])  # 로그인한 사용자만 가능
+def feedback_restore_comment(request):
+    """
+    POST /preference/feedbacks/restore/
+    → 악성 댓글을 정상 댓글로 표시하고 사용자 피드백(reason) 저장
 
+    요청 JSON 예시:
+    {
+        "comment_id": 123,
+        "reason": "욕설이 아니라 친구끼리 쓰는 농담입니다."
+    }
+    """
+    user = request.user
 
+    comment_id = request.data.get('comment_id')
+    reason = request.data.get('reason', '').strip()
+
+    # comment_id가 없을 경우
+    if not comment_id:
+        return Response({"error": "comment_id가 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 댓글이 존재하고 악성으로 표시된 경우만 처리
+    try:
+        comment = Comment.objects.get(id=comment_id, is_offensive=True)
+    except Comment.DoesNotExist:
+        return Response({"error": "해당 악성 댓글을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+
+    # 이미 복원 피드백 기록이 있다면 중복 저장 방지
+    if UserFeedback.objects.filter(comment=comment, user=user).exists():
+        return Response({"detail": "이미 이 댓글에 대해 피드백을 제출하셨습니다."}, status=status.HTTP_409_CONFLICT)
+
+    # 댓글을 정상으로 복원
+    comment.is_offensive = False
+    comment.save()
+
+    # 피드백 레코드 생성 (reason만 저장, result는 보류)
+    UserFeedback.objects.create(
+        comment=comment,
+        user=user,
+        reason=reason  # ✅ 사용자가 입력한 사유 저장
+    )
+
+    return Response({
+        "detail": "댓글이 정상으로 복구되었고, 피드백이 저장되었습니다.",
+        "reason": reason if reason else "사유 없음"
+    }, status=status.HTTP_200_OK)
