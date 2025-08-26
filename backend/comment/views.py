@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import FilteredCommentSerializer
 import random
+from preference.models import UserFeedback
 
 # 🔹 전체 댓글 조회 (Serializer 사용)
 @api_view(['GET'])
@@ -55,4 +56,69 @@ def analyze_comment(request):
         "is_offensive": is_offensive,
         "reason": reason if reason else None,
         "confidence": confidence
+    }, status=200)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def user_restore_comment(request, comment_id):
+    user = request.user
+    reason = request.data.get("reason", "").strip()
+
+    try:
+        # 🔑 여기 수정됨 (user → user_id)
+        comment = Comment.objects.get(id=comment_id, is_offensive=True, user_id=user)
+    except Comment.DoesNotExist:
+        return Response({"error": "해당 악성 댓글이 없습니다."}, status=404)
+
+    # 상태 변경 (악성 → 정상)
+    comment.is_offensive = False
+    comment.save()
+
+    # 피드백 기록
+    UserFeedback.objects.create(
+        comment=comment,
+        user=user,
+        result=2,   # 복원 요청
+        reason=reason
+    )
+
+    return Response({
+        "detail": "댓글이 정상으로 복원되었습니다.",
+        "reason": reason if reason else "사유 없음"
+    }, status=200)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def user_report_offensive(request, comment_id):
+    """
+    POST /comment/report/<comment_id>/
+    요청: { "reason": "욕설이 심합니다." }
+    동작:
+      - Comment.is_offensive = True 로 변경
+      - UserFeedback 에 신고 기록 저장
+    """
+    user = request.user
+    reason = request.data.get("reason", "").strip()
+
+    try:
+        # 정상 댓글만 신고 가능
+        comment = Comment.objects.get(id=comment_id, is_offensive=False, user_id=user)
+    except Comment.DoesNotExist:
+        return Response({"error": "해당 정상 댓글을 찾을 수 없습니다."}, status=404)
+
+    # 상태 변경 (정상 → 악성)
+    comment.is_offensive = True
+    comment.save()
+
+    # 피드백 기록 (악성 신고 요청)
+    UserFeedback.objects.create(
+        comment=comment,
+        user=user,
+        result=1,   # 1 = 악성댓글 삭제 요청
+        reason=reason
+    )
+
+    return Response({
+        "detail": "댓글이 악성으로 신고되었습니다.",
+        "reason": reason if reason else "사유 없음"
     }, status=200)
