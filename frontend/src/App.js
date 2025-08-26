@@ -13,7 +13,8 @@ import CommentEditPage from './CommentEditPage';
 import CommentOffensivePage from './CommentOffensivePage';
 import MainPage from './MainPage'; // ✅ 통합된 메인 페이지
 import CommentAnalyzePage from './CommentAnalyzePage'; // ✅ 새로 추가한 AI 분석 페이지
-
+import FindPasswordPage from './FindPasswordPage'; // ✅ 비밀번호 찾기
+import ResetPasswordPage from './ResetPasswordPage'; // ✅ 비밀번호 재설정
 import './App.css';
 import axios from 'axios';
 import AOS from 'aos';
@@ -39,8 +40,10 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/find-password" element={<FindPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} /> 
 
-        <Route path="/" element={<BaseLayout />}>
+          <Route path="/" element={<BaseLayout />}>
           {/* ✅ 통합된 메인 페이지 */}
           <Route index element={<MainPage />} />
           <Route path="keywords" element={<KeywordPage />} />

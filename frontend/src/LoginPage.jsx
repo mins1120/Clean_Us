@@ -71,7 +71,7 @@ const LoginPage = () => {
 
       <div className="login-footer">
         <a href="/signup">회원가입</a>
-        <a href="#">아이디/비밀번호 찾기</a>
+        <a href="/find-password">비밀번호 찾기</a>
       </div>
 
       {message && <p className="error-message">{message}</p>}
