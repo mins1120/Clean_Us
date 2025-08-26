@@ -77,7 +77,7 @@ function Sidebar({ onClose }) {
           <div className="sidebar-section">
             <h3 className="section-title">실시간 댓글 분석</h3>
             <ul className="sidebar-list">
-              <li><Link to="/filtered-comments">필터링 댓글</Link></li>
+              <li><Link to="/filtered-comments">댓글 필터링</Link></li>
               <li><Link to="/comments/edit">댓글 조회/수정</Link></li>
               <li><Link to="/comments/offensive">악성 댓글 목록</Link></li>
             </ul>

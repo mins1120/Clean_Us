@@ -2,7 +2,7 @@
 
 .edit-comment-container {
   padding: 2rem;
-  max-width: 800px;
+  max-width: 850px;
   margin: 0 auto;
   background-color: #fff;
   border-radius: 12px;
@@ -18,6 +18,7 @@
   padding-left: 12px;
 }
 
+/* ✅ 로딩 & 빈 상태 */
 .edit-comment-loading,
 .edit-comment-empty {
   text-align: center;
@@ -26,6 +27,7 @@
   margin-top: 2rem;
 }
 
+/* ✅ 댓글 리스트 */
 .edit-comment-list {
   list-style: none;
   padding: 0;
@@ -34,31 +36,119 @@
 
 .edit-comment-item {
   border-bottom: 1px solid #eee;
-  padding: 1rem 0;
+  padding: 1.2rem 0;
+  transition: background 0.2s;
+}
+
+.edit-comment-item:hover {
+  background: #f9fbff;
 }
 
 .edit-comment-item:last-child {
   border-bottom: none;
 }
 
+/* ✅ 댓글 요소 */
 .edit-comment-author {
   font-weight: 600;
-  color: #333;
+  color: #007bff;
+  margin-right: 8px;
 }
 
 .edit-comment-content {
   color: #444;
   font-size: 1rem;
+  line-height: 1.5;
 }
 
 .edit-comment-offensive {
+  display: inline-block;
   color: #d9534f;
   font-weight: bold;
-  margin-left: 5px;
+  margin-left: 6px;
+  font-size: 0.9rem;
 }
 
 .edit-comment-date {
-  font-size: 0.75rem;
+  display: block;
+  font-size: 0.8rem;
   color: #aaa;
-  margin-top: 0.3rem;
+  margin-top: 0.4rem;
+}
+
+/* ✅ 복원 버튼 */
+.restore-btn {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.restore-btn:hover {
+  background-color: #c82333;
+}
+
+/* ✅ 복원 박스 */
+.restore-box {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 10px;
+  background: #f9f9ff;
+  border: 1px solid #ddd;
+}
+
+.restore-box h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.restore-box p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+.restore-reason {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  resize: none;
+  margin-bottom: 1rem;
+}
+
+.restore-box button {
+  padding: 8px 14px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.restore-box button:first-of-type {
+  background: #007bff;
+  color: #fff;
+}
+
+.restore-box button:first-of-type:hover {
+  background: #0069d9;
+}
+
+.restore-box button:last-of-type {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.restore-box button:last-of-type:hover {
+  background: #ccc;
 }
