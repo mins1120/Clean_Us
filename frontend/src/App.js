@@ -1,24 +1,20 @@
+// App.js
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BaseLayout from './BaseLayout';
 import KeywordPage from './KeywordPage';
 import AddKeywordPage from './AddKeywordPage';
 import FeedbackPage from './FeedbackPage';
-import HeroSection from './HeroSection';
-import AboutSection from './AboutSection';
-import MainFunctionSection from './MainFunctionSection';
-import FeatureSection from './FeatureSection';
-import ReviewSection from './ReviewSection';
-import FaqSection from './FaqSection';
-import LoginPage from './LoginPage.jsx';
-import SignupPage from './SignupPage.jsx';
-import Mypage from './Mypage.jsx';
+import LoginPage from './LoginPage';
+import SignupPage from './SignupPage';
+import Mypage from './Mypage';
 import FilteredCommentPage from './FilteredCommentPage';
 import CommentEditPage from './CommentEditPage';
 import CommentOffensivePage from './CommentOffensivePage';
+import MainPage from './MainPage'; // ✅ 통합된 메인 페이지
+import CommentAnalyzePage from './CommentAnalyzePage'; // ✅ 새로 추가한 AI 분석 페이지
 import FindPasswordPage from './FindPasswordPage'; // ✅ 비밀번호 찾기
 import ResetPasswordPage from './ResetPasswordPage'; // ✅ 비밀번호 재설정
-
 import './App.css';
 import axios from 'axios';
 import AOS from 'aos';
@@ -47,20 +43,9 @@ function App() {
         <Route path="/find-password" element={<FindPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} /> 
 
-        <Route path="/" element={<BaseLayout />}>
-          <Route
-            index
-            element={
-              <>
-                <HeroSection />
-                <AboutSection />
-                <MainFunctionSection />
-                <FeatureSection />
-                <ReviewSection />
-                <FaqSection />
-              </>
-            }
-          />
+          <Route path="/" element={<BaseLayout />}>
+          {/* ✅ 통합된 메인 페이지 */}
+          <Route index element={<MainPage />} />
           <Route path="keywords" element={<KeywordPage />} />
           <Route path="keywords/add" element={<AddKeywordPage />} />
           <Route path="feedbacks" element={<FeedbackPage />} />
@@ -68,6 +53,9 @@ function App() {
           <Route path="comments/edit" element={<CommentEditPage />} />
           <Route path="comments/offensive" element={<CommentOffensivePage />} />
           <Route path="filtered-comments" element={<FilteredCommentPage />} />
+
+          {/* ✅ 새로 만든 AI 분석 페이지 */}
+          <Route path="analyze-comments" element={<CommentAnalyzePage />} />
         </Route>
       </Routes>
     </Router>

@@ -1,17 +1,13 @@
-// src/CommentEditPage.jsx
-
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from './utils/api';   // ✅ axios → api 교체
 import './CommentEditPage.css';
 
 function CommentEditPage() {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const BASE_URL = 'http://localhost:8000';
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/comment/list/`, { withCredentials: true })
+    api.get('/comment/list/')
       .then(response => {
         setComments(response.data.comments);
       })

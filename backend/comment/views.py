@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import FilteredCommentSerializer
+import random
 
 # 🔹 전체 댓글 조회 (Serializer 사용)
 @api_view(['GET'])
@@ -35,3 +36,23 @@ def get_recent_filtered_comments(request):
     
     serializer = FilteredCommentSerializer(comments, many=True)
     return Response(serializer.data)
+
+# 🔹 AI Mock API: 입력된 텍스트 분석
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def analyze_comment(request):
+    text = request.data.get("text", "")
+    if not text:
+        return Response({"error": "text field is required"}, status=400)
+
+    # ai_utils.py 함수 사용
+    is_offensive, reason = check_offensive(text)
+
+    # confidence는 랜덤으로 (0.7~0.99)
+    confidence = round(random.uniform(0.7, 0.99), 2)
+
+    return Response({
+        "is_offensive": is_offensive,
+        "reason": reason if reason else None,
+        "confidence": confidence
+    }, status=200)

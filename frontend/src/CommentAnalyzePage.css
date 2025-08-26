@@ -1,0 +1,55 @@
+/* ✅ 댓글 입력 + 분석 UI */
+.comment-analyze-box {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment-input {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: none;
+  font-size: 1rem;
+}
+
+.analyze-btn {
+  align-self: flex-end;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.analyze-btn:hover {
+  background-color: #45a049;
+}
+
+.analyze-btn:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
+
+/* ✅ 분석 결과 */
+.analysis-result {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  border: 1px solid #eee;
+}
+
+.analysis-result p {
+  margin: 6px 0;
+}
+
+.analysis-result .error {
+  color: red;
+  font-weight: bold;
+}

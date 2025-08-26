@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from './utils/api';   // ✅ axios → api 교체
 import './CommentOffensivePage.css';
 
 function CommentOffensivePage() {
   const [offensiveComments, setOffensiveComments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const BASE_URL = 'http://localhost:8000';
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/comment/offensive-page/`, { withCredentials: true })
+    api.get('/comment/offensive-page/')
       .then(response => {
         setOffensiveComments(response.data.offensive_comments);
       })
