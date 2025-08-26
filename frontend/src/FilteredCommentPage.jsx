@@ -1,5 +1,6 @@
+// src/pages/FilteredCommentPage.jsx
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from './utils/api';       // ✅ axios 대신 api.js 사용
 import './FilteredCommentPage.css';  // ✅ CSS 파일 임포트
 
 function FilteredCommentPage() {
@@ -7,17 +8,15 @@ function FilteredCommentPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/comment/realtime-filtered-comments/', {
-      withCredentials: true  // 쿠키 인증 (로그인 사용자)
-    })
-    .then(response => {
-      setComments(response.data);
-      setLoading(false);
-    })
-    .catch(error => {
-      console.error('댓글 불러오기 실패:', error);
-      setLoading(false);
-    });
+    api.get('/comment/realtime-filtered-comments/')
+      .then(response => {
+        setComments(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('댓글 불러오기 실패:', error);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
