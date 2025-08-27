@@ -108,6 +108,7 @@ def user_report_offensive(request, comment_id):
 
     # 상태 변경 (정상 → 악성)
     comment.is_offensive = True
+    comment.offensive_reason = "사용자 피드백"
     comment.save()
 
     # 피드백 기록 (악성 신고 요청)

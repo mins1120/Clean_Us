@@ -11,4 +11,4 @@ class UserFeedbackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserFeedback
-        fields = ['id', 'comment', 'comment_content', 'result', 'submitted_at']
+        fields = ['id', 'comment', 'comment_content', 'result', 'submitted_at', 'reason']

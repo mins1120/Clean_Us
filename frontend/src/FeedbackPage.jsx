@@ -46,7 +46,7 @@ function FeedbackPage() {
         {feedbacks.map((fb) => (
           <li key={fb.id} className="feedback-item">
             <p><strong>댓글 내용:</strong> {fb.comment_content}</p>
-            <p><strong>피드백 유형:</strong> {fb.result}</p>
+            <p><strong>피드백 사유:</strong> {fb.reason}</p>
             <p><strong>제출 시간:</strong> {new Date(fb.submitted_at).toLocaleString()}</p>
             <button onClick={() => handleDelete(fb.id)}>피드백 삭제</button>
           </li>

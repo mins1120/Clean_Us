@@ -11,9 +11,9 @@ function CommentOffensivePage() {
   // ✅ 댓글 목록 불러오기
   const fetchComments = () => {
     setLoading(true);
-    api.get('/comment/list/')
+    api.get('/comment/offensive-page/')
       .then(response => {
-        setOffensiveComments(response.data.comments);
+        setOffensiveComments(response.data.offensive_comments);
       })
       .catch(error => {
         console.error('댓글 불러오기 실패:', error);
@@ -68,30 +68,31 @@ function CommentOffensivePage() {
               >
               삭제
               </button>
+              {/* ✅ 복원 모드 */}
+              {editingComment?.id === comment.id && (
+                <div className="restore-box">
+                  <h3>댓글 복원</h3>
+                  <p><b>원본:</b> {editingComment.content}</p>
+                  <textarea
+                    className="restore-reason"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    placeholder="왜 이 댓글이 악성이 아니라고 판단했는지 입력하세요"
+                  />
+                  <div>
+                    <button onClick={handleRestore}>저장</button>
+                    <button onClick={() => { setEditingComment(null); setReason(""); }}>
+                      취소
+                    </button>
+                  </div>
+                </div>
+              )}
             </li>
           ))}
         </ul>
       )}
 
-            {/* ✅ 복원 모드 */}
-      {editingComment && (
-        <div className="restore-box">
-          <h3>댓글 복원</h3>
-          <p><b>원본:</b> {editingComment.content}</p>
-          <textarea
-            className="restore-reason"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder="왜 이 댓글이 악성이 아니라고 판단했는지 입력하세요"
-          />
-          <div>
-            <button onClick={handleRestore}>저장</button>
-            <button onClick={() => { setEditingComment(null); setReason(""); }}>
-              취소
-            </button>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 }
