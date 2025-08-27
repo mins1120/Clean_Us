@@ -1,27 +1,38 @@
+/* FilteredCommentPage.css */
+
 .filtered-comment-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: #ffffff;
+  padding: 2rem;
+  max-width: 850px;
+  margin: 0 auto;
+  background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
 .filtered-comment-container h2 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #eaeaea;
-  padding-bottom: 10px;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #222;
+  border-left: 4px solid #dc3545; /* 🚨 신고 페이지 → 빨강 포인트 */
+  padding-left: 12px;
 }
 
+/* ✅ 댓글 리스트 */
 .filtered-comment-container ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .filtered-comment-container li {
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #eee;
+  padding: 1.2rem 0;
+  transition: background 0.2s;
+}
+
+.filtered-comment-container li:hover {
+  background: #fff5f5;
 }
 
 .filtered-comment-container li:last-child {
@@ -29,17 +40,94 @@
 }
 
 .filtered-comment-container p {
-  margin: 4px 0;
+  margin: 0.3rem 0;
+  font-size: 1rem;
+  color: #444;
 }
 
 .filtered-comment-container strong {
-  color: #333;
-  font-weight: 600;
+  color: #007bff;
 }
 
 .filtered-comment-container small {
-  color: #888;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  color: #aaa;
 }
 
+/* ✅ 삭제 버튼 */
+.filtered-comment-container button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
 
+.filtered-comment-container button:hover {
+  background-color: #c82333;
+}
+
+/* ✅ 신고 박스 */
+.report-box {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 10px;
+  background: #fff9f9;
+  border: 1px solid #f1c0c0;
+}
+
+.report-box h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #c82333;
+}
+
+.report-box p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+.report-box textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  resize: none;
+  margin-bottom: 1rem;
+}
+
+/* ✅ 신고 박스 버튼 */
+.report-box button {
+  padding: 8px 14px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.report-box button:first-of-type {
+  background: #dc3545;
+  color: #fff;
+}
+
+.report-box button:first-of-type:hover {
+  background: #c82333;
+}
+
+.report-box button:last-of-type {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.report-box button:last-of-type:hover {
+  background: #ccc;
+}

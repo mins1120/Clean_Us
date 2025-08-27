@@ -51,7 +51,7 @@ function FilteredCommentPage() {
 
   return (
     <div className="filtered-comment-container">
-      <h2>실시간 필터링된 댓글</h2>
+      <h2>실시간 댓글 필터링</h2>
       <ul>
         {comments.map(comment => (
           <li key={comment.id}>
@@ -59,7 +59,7 @@ function FilteredCommentPage() {
             <p><small>{comment.created_at}</small></p>
 
             {/* ✅ 정상 댓글만 신고 버튼 노출 */}
-            <button onClick={() => setReportingComment(comment)}>악성 신고</button>
+            <button onClick={() => setReportingComment(comment)}>삭제</button>
           </li>
         ))}
       </ul>
