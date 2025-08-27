@@ -5,8 +5,6 @@ import './CommentEditPage.css';
 function CommentEditPage() {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editingComment, setEditingComment] = useState(null); // 현재 복원 중인 댓글
-  const [reason, setReason] = useState(""); // 사유 입력
 
   // ✅ 댓글 목록 불러오기
   const fetchComments = () => {

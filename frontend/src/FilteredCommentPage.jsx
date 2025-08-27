@@ -51,7 +51,7 @@ function FilteredCommentPage() {
 
   return (
     <div className="filtered-comment-container">
-      <h2>실시간 댓글 필터링</h2>
+      <h2>실시간 댓글 필터링(비악성)</h2>
       <ul>
         {comments.map(comment => (
           <li key={comment.id}>
@@ -60,28 +60,29 @@ function FilteredCommentPage() {
 
             {/* ✅ 정상 댓글만 신고 버튼 노출 */}
             <button onClick={() => setReportingComment(comment)}>삭제</button>
+            {/* ✅ 신고 모달/박스 */}
+            {reportingComment?.id === comment.id && (
+              <div className="report-box">
+                <h3>댓글 신고</h3>
+                <p><b>대상 댓글:</b> {reportingComment.content}</p>
+                <textarea
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  placeholder="이 댓글을 왜 악성으로 판단했는지 입력하세요"
+                />
+                <div>
+                  <button onClick={handleReport}>저장</button>
+                  <button onClick={() => { setReportingComment(null); setReason(""); }}>
+                    취소
+                  </button>
+                </div>
+              </div>
+            )}
           </li>
         ))}
       </ul>
 
-      {/* ✅ 신고 모달/박스 */}
-      {reportingComment && (
-        <div className="report-box">
-          <h3>댓글 신고</h3>
-          <p><b>대상 댓글:</b> {reportingComment.content}</p>
-          <textarea
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder="이 댓글을 왜 악성으로 판단했는지 입력하세요"
-          />
-          <div>
-            <button onClick={handleReport}>저장</button>
-            <button onClick={() => { setReportingComment(null); setReason(""); }}>
-              취소
-            </button>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 }
